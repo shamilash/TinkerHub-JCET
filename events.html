@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Archive · TinkerHub JCET</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav id="nav" class="scrolled">
+  <div class="nav-wrap">
+    <a href="index.html" class="logo">
+      <img src="assets/logos/tinkerhub-logo.png" class="nav-logo-img" alt="TinkerHub logo">
+      <span class="logo-text">TinkerHub<span class="sub">JCET</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html#about">About</a>
+      <a href="events.html" style="color:var(--mauve);">Events</a>
+      <a href="index.html#projects">Projects</a>
+      <a href="index.html#team">Community</a>
+    </div>
+    <a href="index.html#join" class="btn btn-primary nav-cta">Join Us</a>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose" aria-label="Close menu">&times;</button>
+  <a href="index.html#about">About</a>
+  <a href="events.html">Events</a>
+  <a href="index.html#projects">Projects</a>
+  <a href="index.html#team">Community</a>
+  <a href="index.html#join">Join Us</a>
+</div>
+
+<div class="archive-hero">
+  <div class="wrap">
+    <span class="eyebrow" style="justify-content:center;">Event Archive</span>
+    <h1 style="margin-top:14px;">Every gathering, in one place</h1>
+    <p>Upcoming sessions and everything we've already run — filter by type to find exactly what you're looking for.</p>
+  </div>
+</div>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="archive-tabs">
+      <button class="archive-tab active" data-status="upcoming">Upcoming</button>
+      <button class="archive-tab" data-status="past">Past Events</button>
+    </div>
+
+    <div class="filter-row">
+      <button class="filter-chip active" data-cat="all">All</button>
+      <button class="filter-chip" data-cat="Workshops">Workshops</button>
+      <button class="filter-chip" data-cat="Study Jams">Study Jams</button>
+      <button class="filter-chip" data-cat="Grama Sabha">Grama Sabha</button>
+      <button class="filter-chip" data-cat="Hackathons">Hackathons</button>
+      <button class="filter-chip" data-cat="Webinars">Webinars</button>
+      <button class="filter-chip" data-cat="Community Meetups">Community Meetups</button>
+    </div>
+
+    <div class="filter-row" id="modeFilterRow">
+      <button class="filter-chip mode-chip active" data-mode="all">All Modes</button>
+      <button class="filter-chip mode-chip" data-mode="On-Campus">🏫 On-Campus</button>
+      <button class="filter-chip mode-chip" data-mode="Online">💻 Online</button>
+    </div>
+
+    <div class="archive-grid" id="archiveGrid"></div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-logos">
+      <img src="assets/logos/tinkerhub-logo.png" alt="TinkerHub logo" class="footer-logo-img th-logo">
+      <span class="footer-logo-caption">A TinkerHub chapter at Jawaharlal College of Engineering &amp; Technology</span>
+    </div>
+    <div class="footer-grid">
+      <a href="index.html" class="logo" style="font-size:18px;">TinkerHub<span class="sub">JCET</span></a>
+      <div class="footer-links">
+        <a href="index.html#about">About</a><a href="events.html">Events</a><a href="index.html#projects">Projects</a><a href="index.html#team">Community</a>
+      </div>
+      <div class="footer-links">
+        <a href="https://www.instagram.com/tinkerhub.jcet?igsh=MXUwa3NpYWFuczE1Mw==" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.linkedin.com/in/tinkerhub-jcet-a88893415" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://whatsapp.com/channel/0029VbDMcx7AzNbzgljS3m18" target="_blank" rel="noopener">WhatsApp Channel</a>
+        <a href="https://chat.whatsapp.com/JXI9VM7bCXVFq79GhUQbjK?s=cl&p=a&mlu=0&ilr=0&amv=0" target="_blank" rel="noopener">WhatsApp Group</a>
+        <a href="mailto:tinkerhubjcet@gmail.com">Email us</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 TinkerHub JCET · Jawaharlal College of Engineering and Technology, Palakkad</span>
+      <span>Designed by Shamila A</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { supabaseUrl, supabaseAnonKey } from "./assets/js/supabase-config.js";
+
+let supabaseReady = supabaseUrl !== "YOUR_SUPABASE_PROJECT_URL";
+let supabase = null;
+if (supabaseReady) {
+  supabase = createClient(supabaseUrl, supabaseAnonKey);
+}
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+const mobileClose = document.getElementById('mobileClose');
+hamburgerBtn.addEventListener('click', () => mobileMenu.classList.add('open'));
+mobileClose.addEventListener('click', () => mobileMenu.classList.remove('open'));
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+/* ============================================================
+   EVENT DATA — now pulled live from Supabase via the /admin
+   dashboard. If Supabase hasn't been set up yet, this falls
+   back to an empty list so the page still works.
+   ============================================================ */
+let events = [];
+
+async function loadEventsFromSupabase(){
+  if (!supabaseReady) return;
+  const { data, error } = await supabase.from('events').select('*').order('date', { ascending: true });
+  if (error) { console.warn('Could not load events from Supabase:', error); return; }
+  events = data || [];
+  render();
+}
+
+const grid = document.getElementById('archiveGrid');
+const archiveTabs = document.querySelectorAll('.archive-tab');
+const filterChips = document.querySelectorAll('.filter-chip:not(.mode-chip)');
+const modeChips = document.querySelectorAll('.mode-chip');
+let currentStatus = 'upcoming';
+let currentCat = 'all';
+let currentMode = 'all';
+
+function fmtDate(iso){
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+}
+
+function render(){
+  const today = new Date();
+  today.setHours(0,0,0,0);
+
+  let filtered = events.filter(ev => {
+    const evDate = new Date(ev.date + 'T00:00:00');
+    const isPast = evDate < today;
+    const statusMatch = currentStatus === 'past' ? isPast : !isPast;
+    const catMatch = currentCat === 'all' || ev.category === currentCat;
+    const modeMatch = currentMode === 'all' || ev.mode === currentMode;
+    return statusMatch && catMatch && modeMatch;
+  });
+
+  filtered.sort((a,b) => currentStatus === 'past'
+    ? new Date(b.date) - new Date(a.date)
+    : new Date(a.date) - new Date(b.date));
+
+  grid.innerHTML = '';
+
+  if (filtered.length === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-state';
+    empty.innerHTML = currentStatus === 'upcoming'
+      ? `<div class="ic">🌱</div><h4>Nothing scheduled yet</h4><p>Nothing's scheduled in this category right now — check back soon or explore another filter.</p>`
+      : `<div class="ic">📦</div><h4>No past events yet</h4><p>No past events in this category yet — they'll show up here once they happen.</p>`;
+    grid.appendChild(empty);
+    return;
+  }
+
+  filtered.forEach(ev => {
+    const card = document.createElement('div');
+    card.className = 'card archive-card';
+    const statusLabel = currentStatus === 'past' ? 'Completed' : 'Upcoming';
+    const statusClass = currentStatus === 'past' ? 'past' : 'upcoming';
+    card.innerHTML = `
+      <div class="archive-card-top">
+        <span class="archive-cat">${ev.category}</span>
+        <span class="archive-status ${statusClass}">${statusLabel}</span>
+      </div>
+      <h4>${ev.title}</h4>
+      <span class="archive-date">${fmtDate(ev.date)}</span>
+      <p>${ev.description}</p>
+      <span class="archive-mode">${ev.mode === 'Online' ? '💻' : '🏫'} ${ev.mode}</span>
+      ${currentStatus === 'upcoming' && ev.link ? `<a class="archive-register" href="${ev.link}" target="_blank" rel="noopener">Register →</a>` : ''}
+    `;
+    grid.appendChild(card);
+  });
+}
+
+archiveTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    archiveTabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentStatus = tab.dataset.status;
+    render();
+  });
+});
+
+filterChips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    filterChips.forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    currentCat = chip.dataset.cat;
+    render();
+  });
+});
+
+modeChips.forEach(chip => {
+  chip.addEventListener('click', () => {
+    modeChips.forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    currentMode = chip.dataset.mode;
+    render();
+  });
+render();
+loadEventsFromSupabase();
+</script>
+</body>
+</html>

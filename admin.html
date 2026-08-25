@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin · TinkerHub JCET</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Poppins:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#161A24; --panel:#1E2330; --panel2:#242A3A; --line:rgba(255,255,255,0.08);
+  --ink:#F1EFE9; --muted:#9299AC; --mauve:#B15C6C; --mauve-dark:#96475A;
+  --olive:#8C9A5C; --olive-dark:#5C6B3C; --danger:#D9527A;
+  --font-display:'Fredoka', sans-serif; --font-ui:'Poppins', sans-serif; --font-mono:'JetBrains Mono', monospace;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+body{background:var(--bg); color:var(--ink); font-family:var(--font-ui); line-height:1.6; min-height:100vh;}
+.wrap{max-width:980px; margin:0 auto; padding:40px 24px 80px;}
+h1{font-family:var(--font-display); font-size:26px; font-weight:700;}
+h2{font-family:var(--font-display); font-size:19px; font-weight:600; margin-bottom:4px;}
+.muted{color:var(--muted); font-size:13.5px;}
+.banner{background:rgba(140,154,92,0.12); border:1px solid rgba(140,154,92,0.35); border-radius:12px; padding:14px 18px; font-size:13px; color:#D8E0C4; margin-bottom:28px;}
+.banner strong{color:#fff;}
+.setup-banner{background:rgba(217,82,122,0.12); border:1px solid rgba(217,82,122,0.35); color:#F0C6D0;}
+
+.gate{min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;}
+.gate-card{background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:36px; max-width:380px; width:100%; text-align:center;}
+.gate-card h1{margin-bottom:8px;}
+.gate-card p{color:var(--muted); font-size:13.5px; margin-bottom:22px;}
+input[type="password"], input[type="email"], input[type="text"], input[type="date"], input[type="file"], select, textarea{
+  width:100%; background:var(--panel2); border:1px solid var(--line); border-radius:10px;
+  padding:11px 14px; color:var(--ink); font-family:var(--font-ui); font-size:14px; margin-bottom:10px;
+}
+textarea{font-family:var(--font-ui); font-size:14px; resize:vertical;}
+input::placeholder, textarea::placeholder{color:#6A7185;}
+.btn{
+  font-family:var(--font-ui); font-weight:600; font-size:13.5px; padding:11px 22px;
+  border-radius:999px; border:none; cursor:pointer; transition:transform .15s ease, filter .15s ease;
+  background:linear-gradient(120deg,var(--mauve),var(--mauve-dark)); color:#fff;
+}
+.btn:hover{transform:translateY(-1px); filter:brightness(1.08);}
+.btn:disabled{opacity:0.5; cursor:not-allowed; transform:none;}
+.btn-secondary{background:var(--panel2); color:var(--ink); border:1px solid var(--line);}
+.btn-danger{background:transparent; color:var(--danger); border:1px solid var(--danger); padding:6px 12px; font-size:12px;}
+.err{color:var(--danger); font-size:13px; margin-top:10px; min-height:18px;}
+
+.dash{display:none;}
+.dash.show{display:block;}
+.topbar{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:12px;}
+.tabs{display:flex; gap:10px; margin:26px 0;}
+.tab-btn{font-family:var(--font-ui); font-weight:600; font-size:13.5px; padding:10px 20px; border-radius:999px; border:1px solid var(--line); background:var(--panel2); color:var(--muted); cursor:pointer;}
+.tab-btn.active{background:var(--olive); color:#fff; border-color:var(--olive);}
+.panel{display:none;}
+.panel.show{display:block;}
+.card{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:24px; margin-bottom:22px;}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+@media(max-width:600px){.grid2{grid-template-columns:1fr;}}
+@media(max-width:640px){
+  .wrap{padding:24px 16px 60px;}
+  .card{padding:18px;}
+  .topbar{flex-direction:column; align-items:flex-start;}
+  .topbar h1{font-size:21px;}
+  .list-item{flex-direction:column; align-items:flex-start; gap:8px;}
+  .list-item .li-main{width:100%;}
+  .tabs{gap:8px;}
+  .tab-btn{padding:9px 16px; font-size:12.5px;}
+  .gate-card{padding:28px 24px;}
+}
+.field-label{font-size:11.5px; font-weight:600; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px; display:block;}
+.list-item{display:flex; justify-content:space-between; align-items:center; gap:12px; background:var(--panel2); border:1px solid var(--line); border-radius:12px; padding:12px 16px; margin-bottom:10px;}
+.list-item img{width:44px; height:44px; object-fit:cover; border-radius:8px; flex-shrink:0;}
+.list-item .li-main{font-size:13.5px; display:flex; gap:12px; align-items:center;}
+.list-item .li-main b{font-family:var(--font-display); font-weight:600;}
+.list-item .li-meta{color:var(--muted); font-size:12px; margin-top:3px;}
+.empty-note{color:var(--muted); font-size:13px; padding:14px 0;}
+.spinner{display:inline-block; width:14px; height:14px; border:2px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin .7s linear infinite; vertical-align:middle; margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.progress-note{font-size:12.5px; color:var(--muted); margin-top:8px;}
+code{font-family:var(--font-mono); background:var(--panel2); padding:2px 6px; border-radius:4px; font-size:12px;}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <h1>🔒 Admin</h1>
+    <p>TinkerHub JCET content dashboard</p>
+    <div id="setupWarning" style="display:none;" class="banner setup-banner">
+      <strong>Setup needed:</strong> this page hasn't been connected to a Supabase project yet. Open <code>assets/js/supabase-config.js</code> and fill in your project's config values before this will work.
+    </div>
+    <input type="email" id="emailInput" placeholder="Email" autocomplete="username">
+    <input type="password" id="pwInput" placeholder="Password" autocomplete="current-password">
+    <button class="btn" id="pwSubmit" style="width:100%; margin-top:4px;">Log in</button>
+    <div class="err" id="pwErr"></div>
+    <p class="muted" style="margin-top:16px; font-size:12px;">Accounts are created from the Supabase Dashboard → Authentication → Users, not from this page.</p>
+  </div>
+</div>
+
+<div class="dash" id="dash">
+  <div class="wrap">
+    <div class="banner">
+      <strong>Live editing:</strong> changes here save straight to your Supabase database and show up on the real site immediately — no copying code or redeploying required.
+    </div>
+
+    <div class="topbar">
+      <h1>TinkerHub JCET — Content Dashboard</h1>
+      <button class="btn btn-secondary" id="logoutBtn">Log out</button>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-panel="events">Events</button>
+      <button class="tab-btn" data-panel="gallery">Gallery</button>
+      <button class="tab-btn" data-panel="team">Team</button>
+      <button class="tab-btn" data-panel="impact">Impact</button>
+      <button class="tab-btn" data-panel="materials">Materials</button>
+      <button class="tab-btn" data-panel="projects">Projects</button>
+    </div>
+
+    <!-- EVENTS PANEL -->
+    <div class="panel show" id="panel-events">
+      <div class="card">
+        <h2>Add a new event</h2>
+        <div class="field">
+          <span class="field-label">Title</span>
+          <input type="text" id="evTitle" placeholder="e.g. Intro to Git & GitHub">
+        </div>
+        <div class="grid2">
+          <div class="field">
+            <span class="field-label">Category</span>
+            <select id="evCategory">
+              <option>Workshops</option>
+              <option>Study Jams</option>
+              <option>Grama Sabha</option>
+              <option>Hackathons</option>
+              <option>Webinars</option>
+              <option>Community Meetups</option>
+            </select>
+          </div>
+          <div class="field">
+            <span class="field-label">Mode</span>
+            <select id="evMode">
+              <option>On-Campus</option>
+              <option>Online</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <span class="field-label">Date</span>
+          <input type="date" id="evDate">
+        </div>
+        <div class="field">
+          <span class="field-label">Description</span>
+          <textarea id="evDesc" style="height:70px;" placeholder="One or two lines about the event"></textarea>
+        </div>
+        <div class="field">
+          <span class="field-label">Registration link (optional)</span>
+          <input type="text" id="evLink" placeholder="Paste a Google Form / signup link — leave blank to use the general TinkerHub join link">
+        </div>
+        <button class="btn" id="addEventBtn">+ Add Event</button>
+        <div class="progress-note" id="evProgress"></div>
+      </div>
+
+      <div class="card">
+        <h2>Current list (<span id="evCount">0</span>)</h2>
+        <div id="eventsList"></div>
+        <p class="empty-note" id="eventsEmptyNote">No events yet — use the form above.</p>
+      </div>
+    </div>
+
+    <!-- GALLERY PANEL -->
+    <div class="panel" id="panel-gallery">
+      <div class="card">
+        <h2>Add a photo</h2>
+        <div class="field">
+          <span class="field-label">Image file</span>
+          <input type="file" id="galFile" accept="image/*">
+        </div>
+        <div class="field">
+          <span class="field-label">Caption (optional)</span>
+          <input type="text" id="galCaption" placeholder="e.g. First Grama Sabha, August 2026">
+        </div>
+        <button class="btn" id="addGalleryBtn">+ Upload Photo</button>
+        <div class="progress-note" id="galProgress"></div>
+      </div>
+
+      <div class="card">
+        <h2>Current list (<span id="galCount">0</span>)</h2>
+        <div id="galleryList"></div>
+        <p class="empty-note" id="galleryEmptyNote">No photos yet — use the form above.</p>
+      </div>
+    </div>
+
+    <!-- TEAM PANEL -->
+    <div class="panel" id="panel-team">
+      <div class="card">
+        <h2>Add a team member</h2>
+        <div class="field">
+          <span class="field-label">Name</span>
+          <input type="text" id="tmName" placeholder="e.g. Shamila A">
+        </div>
+        <div class="field">
+          <span class="field-label">Role</span>
+          <input type="text" id="tmRole" placeholder="e.g. Campus Lead">
+        </div>
+        <div class="field">
+          <span class="field-label">Photo</span>
+          <input type="file" id="tmFile" accept="image/*">
+        </div>
+        <div class="field">
+          <span class="field-label">LinkedIn (optional)</span>
+          <input type="text" id="tmLinkedin" placeholder="https://www.linkedin.com/in/...">
+        </div>
+        <button class="btn" id="addTeamBtn">+ Add Team Member</button>
+        <div class="progress-note" id="tmProgress"></div>
+      </div>
+
+      <div class="card">
+        <h2>Current list (<span id="tmCount">0</span>)</h2>
+        <div id="teamList"></div>
+        <p class="empty-note" id="teamEmptyNote">No team members added yet — the site is showing the default founding team until you add real entries here.</p>
+      </div>
+    </div>
+
+    <!-- IMPACT PANEL -->
+    <div class="panel" id="panel-impact">
+      <div class="card">
+        <h2>Add an impact stat</h2>
+        <div class="field">
+          <span class="field-label">Icon (an emoji works well)</span>
+          <input type="text" id="imIcon" placeholder="🎓">
+        </div>
+        <div class="field">
+          <span class="field-label">Title</span>
+          <input type="text" id="imTitle" placeholder="e.g. Students Reached">
+        </div>
+        <div class="field">
+          <span class="field-label">Description</span>
+          <input type="text" id="imDesc" placeholder="One short line">
+        </div>
+        <div class="field">
+          <span class="field-label">Tag (a number or short status)</span>
+          <input type="text" id="imTag" placeholder="e.g. 120+ students, or Growing every term">
+        </div>
+        <button class="btn" id="addImpactBtn">+ Add Stat</button>
+        <div class="progress-note" id="imProgress"></div>
+      </div>
+
+      <div class="card">
+        <h2>Current list (<span id="imCount">0</span>)</h2>
+        <div id="impactList"></div>
+        <p class="empty-note" id="impactEmptyNote">No stats added yet — the site is showing default placeholder cards until you add real entries here.</p>
+      </div>
+    </div>
+
+    <!-- MATERIALS PANEL -->
+    <div class="panel" id="panel-materials">
+      <div class="card">
+        <h2>Add study material</h2>
+        <div class="field">
+          <span class="field-label">Title</span>
+          <input type="text" id="matTitle" placeholder="e.g. DSA Cheat Sheet">
+        </div>
+        <div class="field">
+          <span class="field-label">Link</span>
+          <input type="text" id="matLink" placeholder="Google Drive / PDF / notes link">
+        </div>
+        <div class="field">
+          <span class="field-label">Description (optional)</span>
+          <input type="text" id="matDesc" placeholder="One short line">
+        </div>
+        <button class="btn" id="addMatBtn">+ Add Material</button>
+        <div class="progress-note" id="matProgress"></div>
+      </div>
+      <div class="card">
+        <h2>Current list (<span id="matCount">0</span>)</h2>
+        <div id="materialsList"></div>
+        <p class="empty-note" id="materialsEmptyNote">No materials added yet.</p>
+      </div>
+    </div>
+
+    <!-- PROJECTS PANEL -->
+    <div class="panel" id="panel-projects">
+      <div class="card">
+        <h2>Add a project</h2>
+        <div class="field">
+          <span class="field-label">Icon (emoji)</span>
+          <input type="text" id="prIcon" placeholder="🧩">
+        </div>
+        <div class="field">
+          <span class="field-label">Title</span>
+          <input type="text" id="prTitle" placeholder="Project name">
+        </div>
+        <div class="field">
+          <span class="field-label">Description</span>
+          <input type="text" id="prDesc" placeholder="One or two lines">
+        </div>
+        <div class="field">
+          <span class="field-label">Link (GitHub / demo, optional)</span>
+          <input type="text" id="prLink" placeholder="https://...">
+        </div>
+        <button class="btn" id="addProjBtn">+ Add Project</button>
+        <div class="progress-note" id="prProgress"></div>
+      </div>
+      <div class="card">
+        <h2>Current list (<span id="prCount">0</span>)</h2>
+        <div id="projectsList"></div>
+        <p class="empty-note" id="projectsEmptyNote">No projects added yet.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { supabaseUrl, supabaseAnonKey } from "./assets/js/supabase-config.js";
+
+const setupWarning = document.getElementById('setupWarning');
+if (supabaseUrl === "YOUR_SUPABASE_PROJECT_URL") {
+  setupWarning.style.display = 'block';
+  document.getElementById('pwSubmit').disabled = true;
+}
+
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
+const gate = document.getElementById('gate');
+const dash = document.getElementById('dash');
+const pwErr = document.getElementById('pwErr');
+
+document.getElementById('pwSubmit').addEventListener('click', async () => {
+  pwErr.textContent = '';
+  const email = document.getElementById('emailInput').value.trim();
+  const password = document.getElementById('pwInput').value;
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  if (error) pwErr.textContent = 'Login failed: ' + error.message;
+});
+document.getElementById('pwInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('pwSubmit').click();
+});
+document.getElementById('logoutBtn').addEventListener('click', () => supabase.auth.signOut());
+
+async function checkSession(){
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    gate.style.display = 'none';
+    dash.classList.add('show');
+    loadEvents();
+    loadGallery();
+    loadTeam();
+    loadImpact();
+    loadMaterials();
+    loadProjects();
+  } else {
+    gate.style.display = 'flex';
+    dash.classList.remove('show');
+  }
+}
+supabase.auth.onAuthStateChange(() => checkSession());
+checkSession();
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('show'));
+    document.getElementById('panel-' + btn.dataset.panel).classList.add('show');
+  });
+});
+
+/* ---------- EVENTS ---------- */
+async function loadEvents(){
+  const list = document.getElementById('eventsList');
+  const empty = document.getElementById('eventsEmptyNote');
+  list.innerHTML = '<p class="muted">Loading…</p>';
+  const { data, error } = await supabase.from('events').select('*').order('date', { ascending: true });
+  const rows = data || [];
+  document.getElementById('evCount').textContent = rows.length;
+  list.innerHTML = '';
+  empty.style.display = rows.length ? 'none' : 'block';
+  rows.forEach(ev => {
+    const row = document.createElement('div');
+    row.className = 'list-item';
+    row.innerHTML = `
+      <div class="li-main">
+        <div><b>${ev.title}</b><br>
+        <span class="li-meta">${ev.category} · ${ev.mode} · ${ev.date}</span><br>
+        <span class="li-meta">${ev.description || ''}</span><br>
+        <span class="li-meta">${ev.link ? '🔗 ' + ev.link : 'No registration link set'}</span></div>
+      </div>
+      <button class="btn-danger">Remove</button>
+    `;
+    row.querySelector('button').addEventListener('click', async () => {
+      await supabase.from('events').delete().eq('id', ev.id);
+      loadEvents();
+    });
+    list.appendChild(row);
+  });
+}
+
+document.getElementById('addEventBtn').addEventListener('click', async () => {
+  const title = document.getElementById('evTitle').value.trim();
+  const date = document.getElementById('evDate').value;
+  if (!title || !date) { alert('Please fill in at least a title and date.'); return; }
+  const btn = document.getElementById('addEventBtn');
+  const progress = document.getElementById('evProgress');
+  btn.disabled = true; progress.innerHTML = '<span class="spinner"></span>Saving…';
+  const link = document.getElementById('evLink').value.trim() || 'https://tinkerhub.org/login';
+  const { error } = await supabase.from('events').insert({
+    title,
+    category: document.getElementById('evCategory').value,
+    mode: document.getElementById('evMode').value,
+    date,
+    description: document.getElementById('evDesc').value.trim(),
+    link
+  });
+  if (error) {
+    progress.textContent = 'Error saving — check your table/RLS setup.';
+  } else {
+    document.getElementById('evTitle').value = '';
+    document.getElementById('evDate').value = '';
+    document.getElementById('evDesc').value = '';
+    document.getElementById('evLink').value = '';
+    progress.textContent = 'Saved ✓';
+    loadEvents();
+  }
+  btn.disabled = false;
+  setTimeout(() => progress.textContent = '', 2000);
+});
+
+/* ---------- GALLERY ---------- */
+async function loadGallery(){
+  const list = document.getElementById('galleryList');
+  const empty = document.getElementById('galleryEmptyNote');
+  list.innerHTML = '<p class="muted">Loading…</p>';
+  const { data, error } = await supabase.from('gallery').select('*').order('created_at', { ascending: false });
+  const rows = data || [];
+  document.getElementById('galCount').textContent = rows.length;
+  list.innerHTML = '';
+  empty.style.display = rows.length ? 'none' : 'block';
+  rows.forEach(g => {
+    const row = document.createElement('div');
+    row.className = 'list-item';
+    row.innerHTML = `
+      <div class="li-main">
+        <img src="${g.src}" alt="">
+        <div><b>${g.caption || 'No caption'}</b></div>
+      </div>
+      <button class="btn-danger">Remove</button>
+    `;
+    row.querySelector('button').addEventListener('click', async () => {
+      if (g.storage_path) {
+        await supabase.storage.from('gallery').remove([g.storage_path]);
+      }
+      await supabase.from('gallery').delete().eq('id', g.id);
+      loadGallery();
+    });
+    list.appendChild(row);
+  });
+}
+
+document.getElementById('addGalleryBtn').addEventListener('click', async () => {
+  const file = document.getElementById('galFile').files[0];
+  if (!file) { alert('Please choose an image file.'); return; }
+  const btn = document.getElementById('addGalleryBtn');
+  const progress = document.getElementById('galProgress');
+  btn.disabled = true; progress.innerHTML = '<span class="spinner"></span>Uploading…';
+  const storagePath = `${Date.now()}-${file.name}`;
+  const { error: uploadError } = await supabase.storage.from('gallery').upload(storagePath, file);
+  if (uploadError) {
+    progress.textContent = 'Error uploading — check your Storage bucket/policies.';
+    btn.disabled = false;
+    setTimeout(() => progress.textContent = '', 3000);
+    return;
+  }
+  const { data: urlData } = supabase.storage.from('gallery').getPublicUrl(storagePath);
+  const { error: insertError } = await supabase.from('gallery').insert({
+    src: urlData.publicUrl,
+    storage_path: storagePath,
+    caption: document.getElementById('galCaption').value.trim()
+  });
+  if (insertError) {
+    progress.textContent = 'Uploaded, but saving the record failed — check your table/RLS setup.';
+  } else {
+    document.getElementById('galFile').value = '';
+    document.getElementById('galCaption').value = '';
+    progress.textContent = 'Uploaded ✓';
+    loadGallery();
+  }
+  btn.disabled = false;
+  setTimeout(() => progress.textContent = '', 3000);
+});
+
+/* ---------- TEAM ---------- */
+async function loadTeam(){
+  const list = document.getElementById('teamList');
+  const empty = document.getElementById('teamEmptyNote');
+  list.innerHTML = '<p class="muted">Loading…</p>';
+  const { data, error } = await supabase.from('team').select('*').order('created_at', { ascending: true });
+  const rows = data || [];
+  document.getElementById('tmCount').textContent = rows.length;
+  list.innerHTML = '';
+  empty.style.display = rows.length ? 'none' : 'block';
+  rows.forEach(m => {
+    const row = document.createElement('div');
+    row.className = 'list-item';
+    row.innerHTML = `
+      <div class="li-main">
+        <img src="${m.photo}" alt="">
+        <div><b>${m.name}</b><br><span class="li-meta">${m.role}</span></div>
+      </div>
+      <button class="btn-danger">Remove</button>
+    `;
+    row.querySelector('button').addEventListener('click', async () => {
+      if (m.storage_path) {
+        await supabase.storage.from('team').remove([m.storage_path]);
+      }
+      await supabase.from('team').delete().eq('id', m.id);
+      loadTeam();
+    });
+    list.appendChild(row);
+  });
+}
+
+document.getElementById('addTeamBtn').addEventListener('click', async () => {
+  const name = document.getElementById('tmName').value.trim();
+  const role = document.getElementById('tmRole').value.trim();
+  const file = document.getElementById('tmFile').files[0];
+  if (!name || !role || !file) { alert('Please fill in name, role, and choose a photo.'); return; }
+  const btn = document.getElementById('addTeamBtn');
+  const progress = document.getElementById('tmProgress');
+  btn.disabled = true; progress.innerHTML = '<span class="spinner"></span>Saving…';
+  const storagePath = `${Date.now()}-${file.name}`;
+  const { error: uploadError } = await supabase.storage.from('team').upload(storagePath, file);
+  if (uploadError) {
+    progress.textContent = 'Error uploading — check your Storage bucket/policies.';
+    btn.disabled = false;
+    setTimeout(() => progress.textContent = '', 3000);
+    return;
+  }
+  const { data: urlData } = supabase.storage.from('team').getPublicUrl(storagePath);
+  const { error: insertError } = await supabase.from('team').insert({
+    name,
+    role,
+    photo: urlData.publicUrl,
+    storage_path: storagePath,
+    linkedin: document.getElementById('tmLinkedin').value.trim()
+  });
+  if (insertError) {
+    progress.textContent = 'Uploaded, but saving the record failed — check your table/RLS setup.';
+  } else {
+    document.getElementById('tmName').value = '';
+    document.getElementById('tmRole').value = '';
+    document.getElementById('tmFile').value = '';
+    document.getElementById('tmLinkedin').value = '';
+    progress.textContent = 'Saved ✓';
+    loadTeam();
+  }
+  btn.disabled = false;
+  setTimeout(() => progress.textContent = '', 3000);
+});
+
+/* ---------- IMPACT ---------- */
+async function loadImpact(){
+  const list = document.getElementById('impactList');
+  const empty = document.getElementById('impactEmptyNote');
+  list.innerHTML = '<p class="muted">Loading…</p>';
+  const { data, error } = await supabase.from('impact').select('*').order('created_at', { ascending: true });
+  const rows = data || [];
+  document.getElementById('imCount').textContent = rows.length;
+  list.innerHTML = '';
+  empty.style.display = rows.length ? 'none' : 'block';
+  rows.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'list-item';
+    row.innerHTML = `
+      <div class="li-main">
+        <div>${item.icon || '✨'} <b>${item.title}</b><br><span class="li-meta">${item.description || ''} · ${item.tag || ''}</span></div>
+      </div>
+      <button class="btn-danger">Remove</button>
+    `;
+    row.querySelector('button').addEventListener('click', async () => {
+      await supabase.from('impact').delete().eq('id', item.id);
+      loadImpact();
+    });
+    list.appendChild(row);
+  });
+}
+
+document.getElementById('addImpactBtn').addEventListener('click', async () => {
+  const title = document.getElementById('imTitle').value.trim();
+  if (!title) { alert('Please enter at least a title.'); return; }
+  const btn = document.getElementById('addImpactBtn');
+  const progress = document.getElementById('imProgress');
+  btn.disabled = true; progress.innerHTML = '<span class="spinner"></span>Saving…';
+  const { error } = await supabase.from('impact').insert({
+    icon: document.getElementById('imIcon').value.trim(),
+    title,
+    description: document.getElementById('imDesc').value.trim(),
+    tag: document.getElementById('imTag').value.trim()
+  });
+  if (error) {
+    progress.textContent = 'Error saving — check your table/RLS setup.';
+  } else {
+    document.getElementById('imIcon').value = '';
+    document.getElementById('imTitle').value = '';
+    document.getElementById('imDesc').value = '';
+    document.getElementById('imTag').value = '';
+    progress.textContent = 'Saved ✓';
+    loadImpact();
+  }
+  btn.disabled = false;
+  setTimeout(() => progress.textContent = '', 2000);
+});
+
+/* ---------- MATERIALS ---------- */
+async function loadMaterials(){
+  const list = document.getElementById('materialsList');
+  const empty = document.getElementById('materialsEmptyNote');
+  list.innerHTML = '<p class="muted">Loading…</p>';
+  const { data } = await supabase.from('materials').select('*').order('created_at', { ascending: false });
+  const rows = data || [];
+  document.getElementById('matCount').textContent = rows.length;
+  list.innerHTML = '';
+  empty.style.display = rows.length ? 'none' : 'block';
+  rows.forEach(m => {
+    const row = document.createElement('div');
+    row.className = 'list-item';
+    row.innerHTML = `
+      <div class="li-main"><div><b>${m.title}</b><br><span class="li-meta">${m.link}</span></div></div>
+      <button class="btn-danger">Remove</button>
+    `;
+    row.querySelector('button').addEventListener('click', async () => {
+      await supabase.from('materials').delete().eq('id', m.id);
+      loadMaterials();
+    });
+    list.appendChild(row);
+  });
+}
+
+document.getElementById('addMatBtn').addEventListener('click', async () => {
+  const title = document.getElementById('matTitle').value.trim();
+  const link = document.getElementById('matLink').value.trim();
+  if (!title || !link) { alert('Please fill in title and link.'); return; }
+  const btn = document.getElementById('addMatBtn');
+  const progress = document.getElementById('matProgress');
+  btn.disabled = true; progress.innerHTML = '<span class="spinner"></span>Saving…';
+  const { error } = await supabase.from('materials').insert({
+    title, link,
+    description: document.getElementById('matDesc').value.trim()
+  });
+  if (error) {
+    progress.textContent = 'Error saving — check your table/RLS setup.';
+  } else {
+    document.getElementById('matTitle').value = '';
+    document.getElementById('matLink').value = '';
+    document.getElementById('matDesc').value = '';
+    progress.textContent = 'Saved ✓';
+    loadMaterials();
+  }
+  btn.disabled = false;
+  setTimeout(() => progress.textContent = '', 2000);
+});
+
+/* ---------- PROJECTS ---------- */
+async function loadProjects(){
+  const list = document.getElementById('projectsList');
+  const empty = document.getElementById('projectsEmptyNote');
+  list.innerHTML = '<p class="muted">Loading…</p>';
+  const { data } = await supabase.from('projects').select('*').order('created_at', { ascending: false });
+  const rows = data || [];
+  document.getElementById('prCount').textContent = rows.length;
+  list.innerHTML = '';
+  empty.style.display = rows.length ? 'none' : 'block';
+  rows.forEach(p => {
+    const row = document.createElement('div');
+    row.className = 'list-item';
+    row.innerHTML = `
+      <div class="li-main"><div>${p.icon || '🧩'} <b>${p.title}</b><br><span class="li-meta">${p.description || ''}</span></div></div>
+      <button class="btn-danger">Remove</button>
+    `;
+    row.querySelector('button').addEventListener('click', async () => {
+      await supabase.from('projects').delete().eq('id', p.id);
+      loadProjects();
+    });
+    list.appendChild(row);
+  });
+}
+
+document.getElementById('addProjBtn').addEventListener('click', async () => {
+  const title = document.getElementById('prTitle').value.trim();
+  if (!title) { alert('Please enter a title.'); return; }
+  const btn = document.getElementById('addProjBtn');
+  const progress = document.getElementById('prProgress');
+  btn.disabled = true; progress.innerHTML = '<span class="spinner"></span>Saving…';
+  const { error } = await supabase.from('projects').insert({
+    icon: document.getElementById('prIcon').value.trim(),
+    title,
+    description: document.getElementById('prDesc').value.trim(),
+    link: document.getElementById('prLink').value.trim()
+  });
+  if (error) {
+    progress.textContent = 'Error saving — check your table/RLS setup.';
+  } else {
+    document.getElementById('prTitle').value = '';
+    document.getElementById('prDesc').value = '';
+    document.getElementById('prLink').value = '';
+    document.getElementById('prIcon').value = '';
+    progress.textContent = 'Saved ✓';
+    loadProjects();
+  }
+  btn.disabled = false;
+  setTimeout(() => progress.textContent = '', 2000);
+});
+</script>
+
+</body>
+</html>

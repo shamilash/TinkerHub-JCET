@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TinkerHub JCET</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="intro-overlay" id="introOverlay" aria-hidden="true">
+  <div class="intro-stage constellation-stage">
+    <div class="constellation-group" id="constellationGroup">
+      <svg class="constellation-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#B15C6C"/>
+            <stop offset="100%" stop-color="#8C9A5C"/>
+          </linearGradient>
+        </defs>
+        <line class="c-line" style="animation-delay:0.30s" x1="50" y1="50" x2="40" y2="37.5" pathLength="1"/>
+        <line class="c-line" style="animation-delay:0.34s" x1="50" y1="50" x2="60" y2="37.5" pathLength="1"/>
+        <line class="c-line" style="animation-delay:0.38s" x1="50" y1="50" x2="35" y2="57.5" pathLength="1"/>
+        <line class="c-line" style="animation-delay:0.42s" x1="50" y1="50" x2="65" y2="57.5" pathLength="1"/>
+        <line class="c-line" style="animation-delay:0.46s" x1="50" y1="50" x2="42.5" y2="70" pathLength="1"/>
+        <line class="c-line" style="animation-delay:0.50s" x1="50" y1="50" x2="57.5" y2="70" pathLength="1"/>
+      </svg>
+      <div class="node" style="left:40%; top:37.5%; --dx:-20vw; --dy:-16vh; animation-delay:0s;">Idea</div>
+      <div class="node" style="left:60%; top:37.5%; --dx:20vw; --dy:-18vh; animation-delay:0.06s;">Learn</div>
+      <div class="node" style="left:50%; top:50%; --dx:0vw; --dy:-22vh; animation-delay:0.12s;">Community</div>
+      <div class="node" style="left:35%; top:57.5%; --dx:-24vw; --dy:8vh; animation-delay:0.18s;">Build</div>
+      <div class="node" style="left:65%; top:57.5%; --dx:24vw; --dy:6vh; animation-delay:0.24s;">Design</div>
+      <div class="node" style="left:42.5%; top:70%; --dx:-14vw; --dy:20vh; animation-delay:0.30s;">Open Source</div>
+      <div class="node" style="left:57.5%; top:70%; --dx:14vw; --dy:20vh; animation-delay:0.36s;">Create</div>
+    </div>
+    <div class="intro-text-stack">
+      <span class="intro-word tw1">Got ideas?</span>
+      <span class="intro-word tw2">We should talk.</span>
+    </div>
+  </div>
+</div>
+
+<nav id="nav">
+  <div class="nav-wrap">
+    <div class="logo">
+      <img src="assets/logos/tinkerhub-logo.png" class="nav-logo-img" alt="TinkerHub logo">
+      <span class="logo-text">TinkerHub<span class="sub">JCET</span></span>
+    </div>
+    <div class="nav-links" id="navLinks">
+      <a href="#about">About</a>
+      <a href="events.html">Events</a>
+      <a href="#projects">Projects</a>
+      <a href="#team">Community</a>
+    </div>
+    <a href="#join" class="btn btn-primary nav-cta" id="navJoinBtn">Join Us</a>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose" aria-label="Close menu">&times;</button>
+  <a href="#about">About</a>
+  <a href="events.html">Events</a>
+  <a href="#projects">Projects</a>
+  <a href="#team">Community</a>
+  <a href="#join">Join Us</a>
+</div>
+
+<!-- HERO -->
+<header class="hero" id="home">
+  <div class="hero-olive-panel"><div class="circle-cream"></div></div>
+  <div class="hero-blob-pink"></div>
+  <div class="hero-dots-top dot-grid">
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+  </div>
+  <div class="hero-dots-bottom dot-grid">
+    <span></span><span></span><span></span><span></span>
+    <span></span><span></span><span></span><span></span>
+  </div>
+  <div class="hero-content">
+    <span class="badge-first">✨ TinkerHub Campus Chapter</span>
+    <h1 class="hero-heading">Welcome to <span class="accent-mauve">TinkerHub</span> <span class="accent-olive">JCET</span></h1>
+    <blockquote class="hero-quote">"Everyone has access to the knowledge required to set the course for a better future."</blockquote>
+    <p class="hero-motto"><span class="learn">Learn</span><span class="sep">•</span><span class="build">Build</span><span class="sep">•</span><span class="share">Share</span></p>
+    <a href="#about" class="btn btn-primary" id="startTinkeringBtn">Start Tinkering <span>→</span></a>
+  </div>
+</header>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="wrap">
+    <div class="about-grid reveal">
+      <div class="about-copy">
+        <span class="badge-first">✨ TinkerHub Campus Chapter</span>
+        <h2>Not a club. A <span class="accent-mauve">movement</span></h2>
+        <p>TinkerHub is a community-led tech movement built by students, for students — peer-to-peer, hands-on, and driven entirely by volunteers who'd rather build something real than sit through another slide deck.</p>
+        <p><strong>This is TinkerHub's chapter at JCET</strong> — student-run, community-driven, with no gatekeeping and no hierarchy. Just people who'd rather build than watch, and an open invitation to anyone curious enough to show up.</p>
+      </div>
+      <div class="origin-list">
+        <div class="card origin-card">
+          <div class="ic">💡</div>
+          <div><h4>Learn by building</h4><p>Workshops and challenges over lectures — every session ends with something you made.</p></div>
+        </div>
+        <div class="card origin-card">
+          <div class="ic">🌱</div>
+          <div><h4>Student-run, always</h4><p>Planned and run entirely by students — no gatekeeping, just people who show up.</p></div>
+        </div>
+        <div class="card origin-card">
+          <div class="ic">🤝</div>
+          <div><h4>Open to everyone</h4><p>No prior coding experience needed — just curiosity and a willingness to tinker.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MONTHLY HIGHLIGHTS -->
+<section id="highlights" class="section-alt">
+  <div class="wrap">
+    <span class="eyebrow reveal">Every month</span>
+    <h2 class="reveal" style="margin-top:14px;">Monthly Highlights</h2>
+    <p class="section-tag reveal">Two recurring formats that anchor the chapter's rhythm, once we're up and running.</p>
+    <div class="highlight-grid reveal">
+      <div class="card highlight-card">
+        <span class="tag">Open floor</span>
+        <h3>Grama Sabha</h3>
+        <p>Our monthly open community gathering — anyone can walk in, share what they're building or learning, or just listen and get inspired. No agenda, no hierarchy, just the community talking tech.</p>
+        <span class="soon">Details announced before each session</span>
+      </div>
+      <div class="card highlight-card">
+        <span class="tag">Together</span>
+        <h3>Study Jams</h3>
+        <p>Focused group sessions where we tackle a tricky topic together — DSA, GATE prep, a new framework, whatever the room needs that month. Bring your doubts, leave with answers.</p>
+        <span class="soon">Details announced before each session</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STUDY MATERIALS -->
+<section id="materials">
+  <div class="wrap">
+    <span class="eyebrow reveal">Study Jams</span>
+    <h2 class="reveal" style="margin-top:14px;">Study Materials</h2>
+    <p class="section-tag reveal">Notes, cheat sheets, and resources shared from our Study Jam sessions.</p>
+    <div class="proj-grid reveal" id="materialsGrid"></div>
+  </div>
+</section>
+
+<!-- EVENTS TEASER -->
+<section id="events" class="section-alt">
+  <div class="wrap center-head">
+    <span class="eyebrow reveal">Everything, in one place</span>
+    <h2 class="reveal" style="margin-top:14px;">Events</h2>
+    <p class="section-tag reveal">Every workshop, Grama Sabha, hackathon and meetup — upcoming and past — lives in the full Event Archive.</p>
+    <div class="card events-teaser reveal">
+      <div class="ic-row">
+        <span>🔧</span><span>🎤</span><span>💻</span><span>🏆</span><span>🤝</span>
+      </div>
+      <p style="color:var(--muted); font-size:14.5px; margin-bottom:24px; max-width:440px; margin-left:auto; margin-right:auto;">Filter by Workshops, Study Jams, Grama Sabha, Hackathons, Webinars or Community Meetups — and see what's completed vs. what's next.</p>
+      <a href="events.html" class="btn btn-primary">View Event Archive →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURED PROJECTS -->
+<section id="projects">
+  <div class="wrap">
+    <span class="eyebrow reveal">Coming out of the chapter</span>
+    <h2 class="reveal" style="margin-top:14px;">Featured Projects</h2>
+    <p class="section-tag reveal">Project slots are open — the first builds from our members will be featured right here.</p>
+    <div class="proj-grid reveal" id="projectsGrid"></div>
+  </div>
+</section>
+
+<!-- COMMUNITY IMPACT -->
+<section id="impact" class="section-alt">
+  <div class="wrap center-head">
+    <span class="eyebrow reveal">What we're building toward</span>
+    <h2 class="reveal" style="margin-top:14px;">Community Impact</h2>
+    <p class="section-tag reveal">These grow as the chapter does — check back as new events and projects roll in.</p>
+    <div class="impact-grid reveal" id="impactGrid"></div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="wrap">
+    <span class="eyebrow reveal">Moments, soon</span>
+    <h2 class="reveal" style="margin-top:14px;">Gallery</h2>
+    <p class="section-tag reveal">Photos from chapter events live here.</p>
+    <div class="gallery-grid reveal" id="galleryGrid"></div>
+  </div>
+</section>
+
+<!-- TEAM -->
+<section id="team" class="section-polaroid">
+  <div class="corkboard-doodles">
+    <svg class="doodle d-plane" viewBox="0 0 60 60"><path d="M4 8C16 6 30 10 40 20C46 26 50 34 52 44" stroke="#C4577A" stroke-width="1.6" stroke-dasharray="4 4" fill="none" stroke-linecap="round"/><path d="M40 12L52 6L46 18L40 12Z" stroke="#C4577A" stroke-width="1.6" fill="none" stroke-linejoin="round"/></svg>
+    <svg class="doodle d-heart1" viewBox="0 0 40 36"><path d="M20 32C8 24 2 16 2 10C2 4 7 1 12 3C16 4.5 19 8 20 11C21 8 24 4.5 28 3C33 1 38 4 38 10C38 16 32 24 20 32Z" stroke="#D9678A" stroke-width="2" fill="none"/></svg>
+    <svg class="doodle d-spark1" viewBox="0 0 40 40"><path d="M20 2L23 17L38 20L23 23L20 38L17 23L2 20L17 17Z" stroke="#D9678A" stroke-width="1.6" fill="none" stroke-linejoin="round"/></svg>
+    <svg class="doodle d-heart2" viewBox="0 0 40 36"><path d="M20 32C8 24 2 16 2 10C2 4 7 1 12 3C16 4.5 19 8 20 11C21 8 24 4.5 28 3C33 1 38 4 38 10C38 16 32 24 20 32Z" stroke="#D9678A" stroke-width="2" fill="none"/></svg>
+    <svg class="doodle d-bulb" viewBox="0 0 48 60"><path d="M24 4C14 4 7 12 7 21C7 28 11 32 14 36C16 39 17 41 17 44H31C31 41 32 39 34 36C37 32 41 28 41 21C41 12 34 4 24 4Z" stroke="#C4577A" stroke-width="1.6" fill="none"/><path d="M17 44H31M19 49H29M21 54H27" stroke="#C4577A" stroke-width="1.6" stroke-linecap="round"/><path d="M20 22C20 18 22 16 24 16" stroke="#D9678A" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <svg class="doodle d-spark2" viewBox="0 0 40 40"><path d="M20 2L23 17L38 20L23 23L20 38L17 23L2 20L17 17Z" stroke="#C4577A" stroke-width="1.6" fill="none" stroke-linejoin="round"/></svg>
+  </div>
+  <div class="wrap">
+    <span class="eyebrow reveal">The founding team</span>
+    <h2 class="reveal" style="margin-top:14px;">Team</h2>
+    <p class="section-tag reveal">Meet the students building TinkerHub JCET from scratch.</p>
+
+    <div class="polaroid-grid reveal" id="teamGrid"></div>
+
+    <div class="sticky-note reveal">
+      <span class="tape tape-note"></span>
+      <p>Learn ♡<br>Build ♡<br>Share ♡</p>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN US -->
+<section id="join">
+  <div class="join-section reveal">
+    <h2>Come tinker with us</h2>
+    <p>Whether you can code, design, write, organise, or just want to learn — there's a place for you in the founding chapter.</p>
+    <div class="join-ctas">
+      <a href="https://tinkerhub.org/login" target="_blank" rel="noopener" class="btn" style="background:#fff; color:var(--olive-deep);">Join TinkerHub →</a>
+      <a href="https://chat.whatsapp.com/JXI9VM7bCXVFq79GhUQbjK?s=cl&p=a&mlu=0&ilr=0&amv=0" target="_blank" rel="noopener" class="btn btn-outline-light">Join WhatsApp Group</a>
+      <a href="mailto:tinkerhubjcet@gmail.com" class="btn btn-outline-light">Email us</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-logos">
+      <img src="assets/logos/tinkerhub-logo.png" alt="TinkerHub logo" class="footer-logo-img th-logo">
+      <span class="footer-logo-caption">A TinkerHub chapter at Jawaharlal College of Engineering &amp; Technology</span>
+    </div>
+    <div class="footer-grid">
+      <div class="logo" style="font-size:18px;">TinkerHub<span class="sub">JCET</span></div>
+      <div class="footer-links">
+        <a href="#about">About</a><a href="events.html">Events</a><a href="#projects">Projects</a><a href="#team">Community</a>
+      </div>
+      <div class="footer-links">
+        <a href="https://www.instagram.com/tinkerhub.jcet?igsh=MXUwa3NpYWFuczE1Mw==" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.linkedin.com/in/tinkerhub-jcet-a88893415" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://whatsapp.com/channel/0029VbDMcx7AzNbzgljS3m18" target="_blank" rel="noopener">WhatsApp Channel</a>
+        <a href="https://chat.whatsapp.com/JXI9VM7bCXVFq79GhUQbjK?s=cl&p=a&mlu=0&ilr=0&amv=0" target="_blank" rel="noopener">WhatsApp Group</a>
+        <a href="mailto:tinkerhubjcet@gmail.com">Email us</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 TinkerHub JCET · Jawaharlal College of Engineering and Technology, Palakkad</span>
+      <span>Designed by Shamila A</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { supabaseUrl, supabaseAnonKey } from "./assets/js/supabase-config.js";
+
+let supabaseReady = supabaseUrl !== "YOUR_SUPABASE_PROJECT_URL";
+let supabase = null;
+if (supabaseReady) {
+  supabase = createClient(supabaseUrl, supabaseAnonKey);
+}
+/* Intro animation: lock scroll while it plays, then reveal the site.
+   Skipped if arriving at a specific section (e.g. index.html#projects)
+   or if it already played once this browser session. */
+const introOverlay = document.getElementById('introOverlay');
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const arrivingAtSection = window.location.hash && window.location.hash.length > 1;
+const introAlreadyPlayed = sessionStorage.getItem('th_intro_played') === '1';
+
+if (prefersReducedMotion || arrivingAtSection || introAlreadyPlayed) {
+  introOverlay.classList.add('hide');
+} else {
+  sessionStorage.setItem('th_intro_played', '1');
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => {
+    introOverlay.classList.add('hide');
+    document.body.style.overflow = '';
+  }, 4300);
+}
+
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 30));
+
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mobileMenu = document.getElementById('mobileMenu');
+const mobileClose = document.getElementById('mobileClose');
+hamburgerBtn.addEventListener('click', () => mobileMenu.classList.add('open'));
+mobileClose.addEventListener('click', () => mobileMenu.classList.remove('open'));
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+
+/* Gate navigation until "Start Tinkering" is clicked */
+const navLinks = document.getElementById('navLinks');
+const navJoinBtn = document.getElementById('navJoinBtn');
+const startBtn = document.getElementById('startTinkeringBtn');
+const gatedEls = [navLinks, navJoinBtn, hamburgerBtn, mobileMenu];
+
+function lockNav(){
+  gatedEls.forEach(el => {
+    el.classList.add('nav-locked');
+    el.querySelectorAll('a, button').forEach(link => link.setAttribute('tabindex', '-1'));
+    el.setAttribute('tabindex', '-1');
+  });
+}
+function unlockNav(){
+  gatedEls.forEach(el => {
+    el.classList.remove('nav-locked');
+    el.querySelectorAll('a, button').forEach(link => link.removeAttribute('tabindex'));
+    el.removeAttribute('tabindex');
+  });
+}
+lockNav();
+startBtn.addEventListener('click', unlockNav);
+
+/* Also unlock automatically once the visitor scrolls past the hero into About */
+const aboutSection = document.getElementById('about');
+const unlockObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      unlockNav();
+      unlockObserver.disconnect();
+    }
+  });
+}, { threshold: 0.15 });
+unlockObserver.observe(aboutSection);
+
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.15 });
+revealEls.forEach(el => io.observe(el));
+
+/* ============================================================
+   GALLERY DATA — now pulled live from Supabase via the
+   /admin dashboard. Falls back to "coming soon" tiles if
+   Supabase isn't set up yet or there are no photos.
+   ============================================================ */
+const galleryGrid = document.getElementById('galleryGrid');
+
+function renderGallery(items){
+  if (!items || items.length === 0) {
+    galleryGrid.innerHTML = `
+      <div class="gallery-tile"><span class="ic">📷</span>Photos drop in here after events</div>
+      <div class="gallery-tile"><span class="ic">📷</span>Photos drop in here after events</div>
+      <div class="gallery-tile"><span class="ic">📷</span>Photos drop in here after events</div>
+      <div class="gallery-tile"><span class="ic">📷</span>Photos drop in here after events</div>
+    `;
+  } else {
+    galleryGrid.innerHTML = items.map(item => `
+      <div class="gallery-tile gallery-tile-photo">
+        <img src="${item.src}" alt="${item.caption || ''}" loading="lazy">
+        ${item.caption ? `<span class="gallery-caption">${item.caption}</span>` : ''}
+      </div>
+    `).join('');
+  }
+}
+renderGallery([]);
+
+async function loadGalleryFromSupabase(){
+  if (!supabaseReady) return;
+  const { data, error } = await supabase.from('gallery').select('*').order('created_at', { ascending: false });
+  if (error) { console.warn('Could not load gallery from Supabase:', error); return; }
+  renderGallery(data || []);
+}
+loadGalleryFromSupabase();
+
+/* ============================================================
+   TEAM DATA — pulled live from Supabase via /admin.
+   Falls back to the original founding team if the table is
+   empty or Supabase isn't set up yet.
+   ============================================================ */
+const teamGrid = document.getElementById('teamGrid');
+const teamFallback = [
+  { name: 'Shamila A', role: 'Campus Lead', photo: 'assets/team/shamila.jpg', linkedin: 'https://www.linkedin.com/in/shamila-a-4b8bb6326' },
+  { name: 'Sreya Krishnan C K', role: 'WIT Lead', photo: 'assets/team/sreya.jpg', linkedin: 'https://www.linkedin.com/in/sreya-krishnan-ck-b18373345' },
+  { name: 'Jeswin Alex', role: 'Outreach Lead', photo: 'assets/team/jeswin.jpg', linkedin: 'https://www.linkedin.com/in/jeswin-alex-848b3335a' },
+  { name: 'Ambady K B', role: 'Learning Coordinator', photo: 'assets/team/ambady.jpg', linkedin: 'https://www.linkedin.com/in/ambady-k-b-491652308' }
+];
+const rotations = ['-4deg', '3deg', '-3deg', '4deg', '2deg', '-2deg'];
+const tapeVariants = ['', 'tape-tl', '', 'tape-br', 'tape-tl', ''];
+
+function renderTeam(members){
+  const list = (members && members.length) ? members : teamFallback;
+  teamGrid.innerHTML = list.map((m, i) => `
+    <div class="polaroid" style="--rot:${rotations[i % rotations.length]}; --sway-delay:${(i * 0.4).toFixed(1)}s;">
+      <span class="pin"></span>
+      ${tapeVariants[i % tapeVariants.length] ? `<span class="tape ${tapeVariants[i % tapeVariants.length]}"></span>` : ''}
+      <img class="photo" src="${m.photo}" alt="${m.name}">
+      <div class="p-name">${m.name}</div>
+      <div class="p-role">${m.role}</div>
+      ${m.linkedin ? `<a class="p-connect" href="${m.linkedin}" target="_blank" rel="noopener">Connect ♡</a>` : ''}
+    </div>
+  `).join('');
+}
+renderTeam([]);
+
+async function loadTeamFromSupabase(){
+  if (!supabaseReady) return;
+  const { data, error } = await supabase.from('team').select('*').order('created_at', { ascending: true });
+  if (error) { console.warn('Could not load team from Supabase:', error); return; }
+  if (data && data.length) renderTeam(data.map(m => ({ name: m.name, role: m.role, photo: m.photo, linkedin: m.linkedin })));
+}
+loadTeamFromSupabase();
+
+/* ============================================================
+   COMMUNITY IMPACT DATA — pulled live from Supabase via /admin.
+   Falls back to the original placeholder cards if the table is
+   empty or Supabase isn't set up yet.
+   ============================================================ */
+const impactGrid = document.getElementById('impactGrid');
+const impactFallback = [
+  { icon: '🎓', title: 'Students Reached', description: 'Growing the chapter, one member at a time.', tag: 'Growing every term' },
+  { icon: '🛠️', title: 'Workshops Planned', description: 'Hands-on sessions in the works for this term.', tag: 'Growing every term' },
+  { icon: '🚀', title: 'Projects Shipped', description: 'The first builds from our members, coming soon.', tag: 'Growing every term' }
+];
+
+function renderImpact(items){
+  const list = (items && items.length) ? items : impactFallback;
+  impactGrid.innerHTML = list.map(item => `
+    <div class="card impact-card">
+      <div class="ic">${item.icon || '✨'}</div>
+      <h4>${item.title}</h4>
+      <p>${item.description || ''}</p>
+      ${item.tag ? `<span class="goal">${item.tag}</span>` : ''}
+    </div>
+  `).join('');
+}
+renderImpact([]);
+
+async function loadImpactFromSupabase(){
+  if (!supabaseReady) return;
+  const { data, error } = await supabase.from('impact').select('*').order('created_at', { ascending: true });
+  if (error) { console.warn('Could not load impact from Supabase:', error); return; }
+  if (data && data.length) renderImpact(data);
+}
+loadImpactFromSupabase();
+
+/* ============================================================
+   STUDY MATERIALS — pulled live from Supabase via /admin.
+   ============================================================ */
+const materialsGrid = document.getElementById('materialsGrid');
+function renderMaterials(items){
+  if (!items || !items.length) {
+    materialsGrid.innerHTML = `<p style="color:var(--muted); grid-column:1/-1; font-size:14.5px;">Materials from Study Jams will show up here.</p>`;
+    return;
+  }
+  materialsGrid.innerHTML = items.map(m => `
+    <a class="proj-card" href="${m.link}" target="_blank" rel="noopener" style="text-decoration:none;">
+      <div class="ph">📄</div>
+      <h4>${m.title}</h4>
+      <p>${m.description || 'Open resource →'}</p>
+    </a>
+  `).join('');
+}
+renderMaterials([]);
+async function loadMaterialsFromSupabase(){
+  if (!supabaseReady) return;
+  const { data, error } = await supabase.from('materials').select('*').order('created_at', { ascending: false });
+  if (error) { console.warn('Could not load materials from Supabase:', error); return; }
+  renderMaterials(data || []);
+}
+loadMaterialsFromSupabase();
+
+/* ============================================================
+   FEATURED PROJECTS — pulled live from Supabase via /admin.
+   Falls back to open "project slot" placeholders if empty.
+   ============================================================ */
+const projectsGrid = document.getElementById('projectsGrid');
+const projectsFallback = [
+  { icon: '🧩', title: 'Project slot open', description: 'Building something? This could be your feature.' },
+  { icon: '🚧', title: 'Project slot open', description: "New builds get featured here as they're shared." },
+  { icon: '✨', title: 'Project slot open', description: "Show us what you're tinkering with." }
+];
+function renderProjects(items){
+  const list = (items && items.length) ? items : projectsFallback;
+  projectsGrid.innerHTML = list.map(p => {
+    const tag = p.link ? 'a' : 'div';
+    const hrefAttr = p.link ? `href="${p.link}" target="_blank" rel="noopener"` : '';
+    return `<${tag} ${hrefAttr} class="proj-card" style="text-decoration:none;">
+      <div class="ph">${p.icon || '🧩'}</div>
+      <h4>${p.title}</h4>
+      <p>${p.description || ''}</p>
+    </${tag}>`;
+  }).join('');
+}
+renderProjects([]);
+async function loadProjectsFromSupabase(){
+  if (!supabaseReady) return;
+  const { data, error } = await supabase.from('projects').select('*').order('created_at', { ascending: false });
+  if (error) { console.warn('Could not load projects from Supabase:', error); return; }
+  if (data && data.length) renderProjects(data);
+}
+loadProjectsFromSupabase();
+</script>
+</body>
+</html>
