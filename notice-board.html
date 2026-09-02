@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notice Board · TinkerHub JCET</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav id="nav" class="scrolled">
+  <div class="nav-wrap">
+    <a href="index.html" class="logo">
+      <img src="assets/logos/tinkerhub-logo.png" class="nav-logo-img" alt="TinkerHub logo">
+      <span class="logo-text">TinkerHub<span class="sub">JCET</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html#about">About</a>
+      <a href="events.html">Events</a>
+      <a href="notice-board.html" style="color:var(--mauve);">Notice Board</a>
+      <a href="index.html#projects">Projects</a>
+      <a href="index.html#team">Community</a>
+    </div>
+    <a href="index.html#join" class="btn btn-primary nav-cta">Join Us</a>
+    <button class="hamburger" id="hamburgerBtn" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose" aria-label="Close menu">&times;</button>
+  <a href="index.html#about">About</a>
+  <a href="events.html">Events</a>
+  <a href="notice-board.html">Notice Board</a>
+  <a href="index.html#projects">Projects</a>
+  <a href="index.html#team">Community</a>
+  <a href="index.html#join">Join Us</a>
+</div>
+
+<div class="nb-hero">
+  <div class="wrap">
+    <span class="eyebrow-spark">✨</span>
+    <h1>Notice Board</h1>
+    <p>All the important updates, events and opportunities. Stay informed. Stay ahead.</p>
+  </div>
+</div>
+
+<section style="padding-top:0;">
+  <div class="wrap">
+    <div class="nb-filter-row" id="nbFilterRow">
+      <button class="filter-chip active" data-cat="all">All</button>
+    </div>
+
+    <div class="nb-board">
+      <div class="nb-grid" id="nbGrid"></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <a href="index.html" class="logo" style="font-size:18px;">TinkerHub<span class="sub">JCET</span></a>
+      <div class="footer-links">
+        <a href="index.html#about">About</a><a href="events.html">Events</a><a href="notice-board.html">Notice Board</a><a href="index.html#projects">Projects</a><a href="index.html#team">Community</a>
+      </div>
+      <div class="footer-links">
+        <a href="https://www.instagram.com/tinkerhub.jcet?igsh=MXUwa3NpYWFuczE1Mw==" target="_blank" rel="noopener">Instagram</a>
+        <a href="mailto:tinkerhubjcet@gmail.com">Email us</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 TinkerHub JCET</span>
+      <span>Designed by Shamila A</span>
+    </div>
+  </div>
+</footer>
+
+<script type="module">
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { supabaseUrl, supabaseAnonKey } from "./assets/js/supabase-config.js";
+
+const supabaseReady =
+  supabaseUrl &&
+  supabaseAnonKey &&
+  supabaseUrl !== "YOUR_SUPABASE_PROJECT_URL" &&
+  supabaseAnonKey !== "YOUR_SUPABASE_ANON_KEY";
+
+const supabase = supabaseReady
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
+
+const hamburgerBtn = document.getElementById("hamburgerBtn");
+const mobileMenu = document.getElementById("mobileMenu");
+const mobileClose = document.getElementById("mobileClose");
+
+hamburgerBtn.addEventListener("click", () => mobileMenu.classList.add("open"));
+mobileClose.addEventListener("click", () => mobileMenu.classList.remove("open"));
+mobileMenu.querySelectorAll("a").forEach(link => {
+  link.addEventListener("click", () => mobileMenu.classList.remove("open"));
+});
+
+/* Category → colour + icon map. Unknown/custom categories fall back gracefully. */
+const CATEGORY_STYLES = {
+  "Featured":     { pin: "#7B5CF0", icon: "✨" },
+  "Workshop":     { pin: "#3F9D5C", icon: "🎨" },
+  "Competition":  { pin: "#E8722E", icon: "🏆" },
+  "Talk":         { pin: "#3D6FE0", icon: "💡" },
+  "Announcement": { pin: "#B15C6C", icon: "📌" }
+};
+const DEFAULT_STYLE = { pin: "#8C9A5C", icon: "📌" };
+
+function styleFor(category){
+  return CATEGORY_STYLES[category] || DEFAULT_STYLE;
+}
+
+/* Shown until real notices are added via /admin — mirrors the rest of the site's pattern. */
+const DEFAULT_NOTICES = [
+  {
+    title: "Useless Projects 3.0",
+    category: "Featured",
+    description: "A 13-hour overnight buildathon where useless ideas become iconic.",
+    event_date: "2026-09-11",
+    event_time: null,
+    date_label: "11 – 12 Sep 2026",
+    link: "https://tinkerhub.org/login",
+    image: null
+  },
+  {
+    title: "AI Art Workshop",
+    category: "Workshop",
+    description: "Explore the world of AI art and create stunning visuals with simple prompts.",
+    event_date: "2026-09-20",
+    event_time: "4:00 PM",
+    link: "https://tinkerhub.org/login",
+    image: null
+  },
+  {
+    title: "Prompt Wars",
+    category: "Competition",
+    description: "Same task. Different minds. The best prompt wins!",
+    event_date: "2026-09-25",
+    event_time: "6:00 PM",
+    link: "https://tinkerhub.org/login",
+    image: null
+  },
+  {
+    title: "Beyond Code",
+    category: "Talk",
+    description: "An inspiring talk about growth, struggles and success.",
+    event_date: "2026-09-27",
+    event_time: "5:00 PM",
+    link: "https://tinkerhub.org/login",
+    image: null
+  }
+];
+
+const grid = document.getElementById("nbGrid");
+const filterRow = document.getElementById("nbFilterRow");
+let notices = [];
+let currentCat = "all";
+
+function formatDate(notice){
+  if (notice.date_label) return notice.date_label;
+  if (!notice.event_date) return "";
+  const d = new Date(notice.event_date + "T00:00:00");
+  const label = d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+  return notice.event_time ? `${label} · ${notice.event_time}` : label;
+}
+
+function buildFilters(){
+  const cats = ["all", ...new Set(notices.map(n => n.category).filter(Boolean))];
+  filterRow.innerHTML = cats.map(c =>
+    `<button class="filter-chip${c === currentCat ? " active" : ""}" data-cat="${c}">${c === "all" ? "All" : c}</button>`
+  ).join("");
+  filterRow.querySelectorAll(".filter-chip").forEach(chip => {
+    chip.addEventListener("click", () => {
+      currentCat = chip.dataset.cat;
+      buildFilters();
+      renderNotices();
+    });
+  });
+}
+
+function renderNotices(){
+  const filtered = currentCat === "all" ? notices : notices.filter(n => n.category === currentCat);
+
+  grid.innerHTML = "";
+
+  if (!filtered.length){
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1;">
+        <div class="ic">📭</div>
+        <h4>Nothing pinned up yet</h4>
+        <p>Nothing's posted in this category right now — check back soon.</p>
+      </div>`;
+    return;
+  }
+
+  filtered.forEach(notice => {
+    const s = styleFor(notice.category);
+    const card = document.createElement("div");
+    card.className = "nb-card";
+    card.style.setProperty("--pin", s.pin);
+    card.innerHTML = `
+      <div class="nb-pin"></div>
+      <div class="nb-thumb">
+        ${notice.image ? `<img src="${notice.image}" alt="">` : s.icon}
+      </div>
+      <div class="nb-body">
+        <span class="nb-badge">${notice.category || "Notice"}</span>
+        <h4>${notice.title || "Untitled notice"}</h4>
+        <p>${notice.description || ""}</p>
+        <div class="nb-meta-row">
+          <span class="nb-date">${formatDate(notice) ? "🗓️ " + formatDate(notice) : ""}</span>
+          ${notice.link ? `<a class="nb-btn" href="${notice.link}" target="_blank" rel="noopener">View Details →</a>` : ""}
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+async function loadNotices(){
+  if (!supabaseReady){
+    notices = DEFAULT_NOTICES;
+    buildFilters();
+    renderNotices();
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("notices")
+    .select("*")
+    .order("event_date", { ascending: true, nullsFirst: false });
+
+  if (error){
+    console.error(error);
+    notices = DEFAULT_NOTICES;
+  } else {
+    notices = (data && data.length) ? data : DEFAULT_NOTICES;
+  }
+
+  buildFilters();
+  renderNotices();
+}
+
+loadNotices();
+
+if (supabaseReady){
+  supabase
+    .channel("public-notices")
+    .on("postgres_changes", { event: "*", schema: "public", table: "notices" }, loadNotices)
+    .subscribe();
+
+  setInterval(loadNotices, 30000);
+  window.addEventListener("focus", loadNotices);
+}
+</script>
+
+</body>
+</html>
