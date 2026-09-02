@@ -62,7 +62,7 @@
       <button class="filter-chip" data-cat="Community Meetups">Community Meetups</button>
     </div>
 
-    <div class="filter-row" id="modeFilterRow">
+    <div class="filter-row">
       <button class="filter-chip mode-chip active" data-mode="all">All Modes</button>
       <button class="filter-chip mode-chip" data-mode="On-Campus">🏫 On-Campus</button>
       <button class="filter-chip mode-chip" data-mode="Online">💻 Online</button>
@@ -74,25 +74,21 @@
 
 <footer>
   <div class="wrap">
-    <div class="footer-logos">
-      <img src="assets/logos/tinkerhub-logo.png" alt="TinkerHub logo" class="footer-logo-img th-logo">
-      <span class="footer-logo-caption">A TinkerHub chapter at Jawaharlal College of Engineering &amp; Technology</span>
-    </div>
     <div class="footer-grid">
       <a href="index.html" class="logo" style="font-size:18px;">TinkerHub<span class="sub">JCET</span></a>
       <div class="footer-links">
-        <a href="index.html#about">About</a><a href="events.html">Events</a><a href="index.html#projects">Projects</a><a href="index.html#team">Community</a>
+        <a href="index.html#about">About</a>
+        <a href="events.html">Events</a>
+        <a href="index.html#projects">Projects</a>
+        <a href="index.html#team">Community</a>
       </div>
       <div class="footer-links">
         <a href="https://www.instagram.com/tinkerhub.jcet?igsh=MXUwa3NpYWFuczE1Mw==" target="_blank" rel="noopener">Instagram</a>
-        <a href="https://www.linkedin.com/in/tinkerhub-jcet-a88893415" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="https://whatsapp.com/channel/0029VbDMcx7AzNbzgljS3m18" target="_blank" rel="noopener">WhatsApp Channel</a>
-        <a href="https://chat.whatsapp.com/JXI9VM7bCXVFq79GhUQbjK?s=cl&p=a&mlu=0&ilr=0&amv=0" target="_blank" rel="noopener">WhatsApp Group</a>
         <a href="mailto:tinkerhubjcet@gmail.com">Email us</a>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 TinkerHub JCET · Jawaharlal College of Engineering and Technology, Palakkad</span>
+      <span>© 2026 TinkerHub JCET</span>
       <span>Designed by Shamila A</span>
     </div>
   </div>
@@ -102,135 +98,189 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { supabaseUrl, supabaseAnonKey } from "./assets/js/supabase-config.js";
 
-let supabaseReady = supabaseUrl !== "YOUR_SUPABASE_PROJECT_URL";
-let supabase = null;
-if (supabaseReady) {
-  supabase = createClient(supabaseUrl, supabaseAnonKey);
-}
-const hamburgerBtn = document.getElementById('hamburgerBtn');
-const mobileMenu = document.getElementById('mobileMenu');
-const mobileClose = document.getElementById('mobileClose');
-hamburgerBtn.addEventListener('click', () => mobileMenu.classList.add('open'));
-mobileClose.addEventListener('click', () => mobileMenu.classList.remove('open'));
-mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => mobileMenu.classList.remove('open')));
+const supabaseReady =
+  supabaseUrl &&
+  supabaseAnonKey &&
+  supabaseUrl !== "YOUR_SUPABASE_PROJECT_URL" &&
+  supabaseAnonKey !== "YOUR_SUPABASE_ANON_KEY";
 
-/* ============================================================
-   EVENT DATA — now pulled live from Supabase via the /admin
-   dashboard. If Supabase hasn't been set up yet, this falls
-   back to an empty list so the page still works.
-   ============================================================ */
+const supabase = supabaseReady
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
+
+const hamburgerBtn = document.getElementById("hamburgerBtn");
+const mobileMenu = document.getElementById("mobileMenu");
+const mobileClose = document.getElementById("mobileClose");
+
+hamburgerBtn.addEventListener("click", () => mobileMenu.classList.add("open"));
+mobileClose.addEventListener("click", () => mobileMenu.classList.remove("open"));
+
+mobileMenu.querySelectorAll("a").forEach(link => {
+  link.addEventListener("click", () => mobileMenu.classList.remove("open"));
+});
+
+const grid = document.getElementById("archiveGrid");
+const archiveTabs = document.querySelectorAll(".archive-tab");
+const filterChips = document.querySelectorAll(".filter-chip:not(.mode-chip)");
+const modeChips = document.querySelectorAll(".mode-chip");
+
 let events = [];
+let currentStatus = "upcoming";
+let currentCat = "all";
+let currentMode = "all";
 
-async function loadEventsFromSupabase(){
-  if (!supabaseReady) return;
-  const { data, error } = await supabase.from('events').select('*').order('date', { ascending: true });
-  if (error) { console.warn('Could not load events from Supabase:', error); return; }
-  events = data || [];
-  render();
-}
-
-const grid = document.getElementById('archiveGrid');
-const archiveTabs = document.querySelectorAll('.archive-tab');
-const filterChips = document.querySelectorAll('.filter-chip:not(.mode-chip)');
-const modeChips = document.querySelectorAll('.mode-chip');
-let currentStatus = 'upcoming';
-let currentCat = 'all';
-let currentMode = 'all';
-
-function fmtDate(iso){
-  const d = new Date(iso + 'T00:00:00');
-  return d.toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
-}
-
-function render(){
-  const today = new Date();
-  today.setHours(0,0,0,0);
-
-  let filtered = events.filter(ev => {
-    const evDate = new Date(ev.date + 'T00:00:00');
-    const isPast = evDate < today;
-    const statusMatch = currentStatus === 'past' ? isPast : !isPast;
-    const catMatch = currentCat === 'all' || ev.category === currentCat;
-    const modeMatch = currentMode === 'all' || ev.mode === currentMode;
-    return statusMatch && catMatch && modeMatch;
+function formatDate(dateValue) {
+  const date = new Date(dateValue + "T00:00:00");
+  return date.toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "short",
+    year: "numeric"
   });
+}
 
-  filtered.sort((a,b) => currentStatus === 'past'
-    ? new Date(b.date) - new Date(a.date)
-    : new Date(a.date) - new Date(b.date));
+function renderEvents() {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-  grid.innerHTML = '';
+  const filteredEvents = events
+    .filter(event => {
+      const eventDate = new Date(event.date + "T00:00:00");
+      const isPast = eventDate < today;
 
-  if (filtered.length === 0) {
-    const empty = document.createElement('div');
-    empty.className = 'empty-state';
-    empty.innerHTML = currentStatus === 'upcoming'
-      ? `<div class="ic">🌱</div><h4>Nothing scheduled yet</h4><p>Nothing's scheduled in this category right now — check back soon or explore another filter.</p>`
-      : `<div class="ic">📦</div><h4>No past events yet</h4><p>No past events in this category yet — they'll show up here once they happen.</p>`;
-    grid.appendChild(empty);
+      const statusMatch = currentStatus === "past" ? isPast : !isPast;
+      const categoryMatch = currentCat === "all" || event.category === currentCat;
+      const modeMatch = currentMode === "all" || event.mode === currentMode;
+
+      return statusMatch && categoryMatch && modeMatch;
+    })
+    .sort((a, b) => {
+      return currentStatus === "past"
+        ? new Date(b.date) - new Date(a.date)
+        : new Date(a.date) - new Date(b.date);
+    });
+
+  grid.innerHTML = "";
+
+  if (!filteredEvents.length) {
+    grid.innerHTML = currentStatus === "upcoming"
+      ? `<div class="empty-state">
+          <div class="ic">🌱</div>
+          <h4>Nothing scheduled yet</h4>
+          <p>Nothing's scheduled in this category right now — check back soon.</p>
+        </div>`
+      : `<div class="empty-state">
+          <div class="ic">📦</div>
+          <h4>No past events yet</h4>
+          <p>No past events match this filter.</p>
+        </div>`;
     return;
   }
 
-  filtered.forEach(ev => {
-    const card = document.createElement('div');
-    card.className = 'card archive-card';
-    const statusLabel = currentStatus === 'past' ? 'Completed' : 'Upcoming';
-    const statusClass = currentStatus === 'past' ? 'past' : 'upcoming';
+  filteredEvents.forEach(event => {
+    const card = document.createElement("div");
+    card.className = "card archive-card";
+
+    const isPast = currentStatus === "past";
+
     card.innerHTML = `
       <div class="archive-card-top">
-        <span class="archive-cat">${ev.category}</span>
-        <span class="archive-status ${statusClass}">${statusLabel}</span>
+        <span class="archive-cat">${event.category || "Event"}</span>
+        <span class="archive-status ${isPast ? "past" : "upcoming"}">
+          ${isPast ? "Completed" : "Upcoming"}
+        </span>
       </div>
-      <h4>${ev.title}</h4>
-      <span class="archive-date">${fmtDate(ev.date)}</span>
-      <p>${ev.description}</p>
-      <span class="archive-mode">${ev.mode === 'Online' ? '💻' : '🏫'} ${ev.mode}</span>
-      ${currentStatus === 'upcoming' && ev.link ? `<a class="archive-register" href="${ev.link}" target="_blank" rel="noopener">Register →</a>` : ''}
+      <h4>${event.title || "Untitled event"}</h4>
+      <span class="archive-date">${formatDate(event.date)}</span>
+      <p>${event.description || ""}</p>
+      <span class="archive-mode">
+        ${event.mode === "Online" ? "💻" : "🏫"} ${event.mode || "On-Campus"}
+      </span>
+      ${
+        !isPast && event.link
+          ? `<a class="archive-register" href="${event.link}" target="_blank" rel="noopener">Register →</a>`
+          : ""
+      }
     `;
+
     grid.appendChild(card);
   });
 }
 
+async function loadEvents() {
+  if (!supabaseReady) {
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="ic">⚠️</div>
+        <h4>Supabase is not connected</h4>
+        <p>Check assets/js/supabase-config.js.</p>
+      </div>`;
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from("events")
+    .select("*")
+    .order("date", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    grid.innerHTML = `
+      <div class="empty-state">
+        <div class="ic">⚠️</div>
+        <h4>Could not load events</h4>
+        <p>${error.message}</p>
+      </div>`;
+    return;
+  }
+
+  events = data || [];
+  renderEvents();
+}
+
 archiveTabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    archiveTabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
+  tab.addEventListener("click", () => {
+    archiveTabs.forEach(item => item.classList.remove("active"));
+    tab.classList.add("active");
     currentStatus = tab.dataset.status;
-    render();
+    renderEvents();
   });
 });
 
 filterChips.forEach(chip => {
-  chip.addEventListener('click', () => {
-    filterChips.forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
+  chip.addEventListener("click", () => {
+    filterChips.forEach(item => item.classList.remove("active"));
+    chip.classList.add("active");
     currentCat = chip.dataset.cat;
-    render();
+    renderEvents();
   });
 });
 
 modeChips.forEach(chip => {
-  chip.addEventListener('click', () => {
-    modeChips.forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
+  chip.addEventListener("click", () => {
+    modeChips.forEach(item => item.classList.remove("active"));
+    chip.classList.add("active");
     currentMode = chip.dataset.mode;
-    render();
+    renderEvents();
   });
-render();
-loadEventsFromSupabase();
+});
 
-// Keep an already-open archive in sync after an admin adds, removes, or edits
-// an event. The interval is a fallback for projects where Realtime has not yet
-// been enabled for the events table.
+renderEvents();
+loadEvents();
+
 if (supabaseReady) {
   supabase
-    .channel('public:events')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, loadEventsFromSupabase)
+    .channel("public-events")
+    .on(
+      "postgres_changes",
+      { event: "*", schema: "public", table: "events" },
+      loadEvents
+    )
     .subscribe();
 
-  setInterval(loadEventsFromSupabase, 30000);
-  window.addEventListener('focus', loadEventsFromSupabase);
+  setInterval(loadEvents, 30000);
+  window.addEventListener("focus", loadEvents);
 }
 </script>
+
 </body>
 </html>
