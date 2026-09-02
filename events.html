@@ -218,6 +218,19 @@ modeChips.forEach(chip => {
   });
 render();
 loadEventsFromSupabase();
+
+// Keep an already-open archive in sync after an admin adds, removes, or edits
+// an event. The interval is a fallback for projects where Realtime has not yet
+// been enabled for the events table.
+if (supabaseReady) {
+  supabase
+    .channel('public:events')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, loadEventsFromSupabase)
+    .subscribe();
+
+  setInterval(loadEventsFromSupabase, 30000);
+  window.addEventListener('focus', loadEventsFromSupabase);
+}
 </script>
 </body>
 </html>
