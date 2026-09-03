@@ -928,14 +928,14 @@ document
 
       });
 
-    if (error) {
+   if (error) {
 
-      console.error(error);
+  console.error("NOTICE INSERT ERROR:", error);
 
-      progress.textContent =
-        'Error saving — check your notices table/RLS setup.';
+  progress.textContent =
+    'Error: ' + error.message;
 
-    } else {
+} else {
 
       document.getElementById('ntTitle').value = '';
       document.getElementById('ntDate').value = '';
