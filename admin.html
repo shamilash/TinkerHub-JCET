@@ -448,6 +448,7 @@ async function checkSession(){
     loadImpact();
     loadMaterials();
     loadProjects();
+    loadNotices();
   } else {
     gate.style.display = 'flex';
     dash.classList.remove('show');
@@ -758,6 +759,205 @@ document.getElementById('addMatBtn').addEventListener('click', async () => {
   btn.disabled = false;
   setTimeout(() => progress.textContent = '', 2000);
 });
+  /* ---------- NOTICES ---------- */
+
+async function loadNotices() {
+
+  const list = document.getElementById('noticesList');
+  const empty = document.getElementById('noticesEmptyNote');
+
+  list.innerHTML = '<p class="muted">Loading…</p>';
+
+  const { data, error } = await supabase
+    .from('notices')
+    .select('*')
+    .order('event_date', {
+      ascending: true,
+      nullsFirst: false
+    });
+
+  if (error) {
+    console.error(error);
+    list.innerHTML =
+      '<p class="err">Could not load notices.</p>';
+    return;
+  }
+
+  const rows = data || [];
+
+  document.getElementById('ntCount').textContent = rows.length;
+
+  list.innerHTML = '';
+
+  empty.style.display = rows.length ? 'none' : 'block';
+
+  rows.forEach(notice => {
+
+    const row = document.createElement('div');
+
+    row.className = 'list-item';
+
+    row.innerHTML = `
+      <div class="li-main">
+
+        ${
+          notice.image
+            ? `<img src="${notice.image}" alt="">`
+            : `<div style="
+                width:44px;
+                height:44px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                background:var(--panel);
+                border-radius:8px;
+                font-size:22px;
+              ">📌</div>`
+        }
+
+        <div>
+          <b>${notice.title || 'Untitled notice'}</b>
+
+          <br>
+
+          <span class="li-meta">
+            ${notice.category || 'Notice'}
+            ${notice.event_date ? ' · ' + notice.event_date : ''}
+            ${notice.event_time ? ' · ' + notice.event_time : ''}
+          </span>
+
+          <br>
+
+          <span class="li-meta">
+            ${notice.description || ''}
+          </span>
+
+        </div>
+
+      </div>
+
+      <button class="btn-danger">
+        Remove
+      </button>
+    `;
+
+    row.querySelector('button').addEventListener(
+      'click',
+      async () => {
+
+        const confirmed = confirm(
+          `Remove "${notice.title}"?`
+        );
+
+        if (!confirmed) return;
+
+        const { error } = await supabase
+          .from('notices')
+          .delete()
+          .eq('id', notice.id);
+
+        if (error) {
+          alert('Could not delete notice: ' + error.message);
+          return;
+        }
+
+        loadNotices();
+      }
+    );
+
+    list.appendChild(row);
+
+  });
+}
+
+
+document
+  .getElementById('addNoticeBtn')
+  .addEventListener('click', async () => {
+
+    const title =
+      document.getElementById('ntTitle').value.trim();
+
+    const category =
+      document.getElementById('ntCategory').value;
+
+    const date =
+      document.getElementById('ntDate').value;
+
+    if (!title) {
+      alert('Please enter a notice title.');
+      return;
+    }
+
+    const btn =
+      document.getElementById('addNoticeBtn');
+
+    const progress =
+      document.getElementById('ntProgress');
+
+    btn.disabled = true;
+
+    progress.innerHTML =
+      '<span class="spinner"></span>Saving…';
+
+    const { error } = await supabase
+      .from('notices')
+      .insert({
+
+        title,
+
+        category,
+
+        description:
+          document.getElementById('ntDesc').value.trim(),
+
+        event_date:
+          date || null,
+
+        event_time:
+          document.getElementById('ntTime').value.trim() || null,
+
+        date_label:
+          document.getElementById('ntDateLabel').value.trim() || null,
+
+        link:
+          document.getElementById('ntLink').value.trim() || null,
+
+        image:
+          document.getElementById('ntImage').value.trim() || null
+
+      });
+
+    if (error) {
+
+      console.error(error);
+
+      progress.textContent =
+        'Error saving — check your notices table/RLS setup.';
+
+    } else {
+
+      document.getElementById('ntTitle').value = '';
+      document.getElementById('ntDate').value = '';
+      document.getElementById('ntTime').value = '';
+      document.getElementById('ntDesc').value = '';
+      document.getElementById('ntDateLabel').value = '';
+      document.getElementById('ntLink').value = '';
+      document.getElementById('ntImage').value = '';
+
+      progress.textContent = 'Saved ✓';
+
+      loadNotices();
+    }
+
+    btn.disabled = false;
+
+    setTimeout(
+      () => progress.textContent = '',
+      2500
+    );
+
+  });
 
 /* ---------- PROJECTS ---------- */
 async function loadProjects(){
