@@ -115,6 +115,7 @@ code{font-family:var(--font-mono); background:var(--panel2); padding:2px 6px; bo
       <button class="tab-btn" data-panel="impact">Impact</button>
       <button class="tab-btn" data-panel="materials">Materials</button>
       <button class="tab-btn" data-panel="projects">Projects</button>
+      <button class="tab-btn" data-panel="notices">Notices</button>
     </div>
 
     <!-- EVENTS PANEL -->
@@ -308,6 +309,103 @@ code{font-family:var(--font-mono); background:var(--panel2); padding:2px 6px; bo
         <p class="empty-note" id="projectsEmptyNote">No projects added yet.</p>
       </div>
     </div>
+    <!-- NOTICES PANEL -->
+<div class="panel" id="panel-notices">
+
+  <div class="card">
+    <h2>Add a new notice</h2>
+
+    <div class="field">
+      <span class="field-label">Title</span>
+      <input
+        type="text"
+        id="ntTitle"
+        placeholder="e.g. Useless Projects 3.0">
+    </div>
+
+    <div class="grid2">
+
+      <div class="field">
+        <span class="field-label">Category</span>
+        <select id="ntCategory">
+          <option>Featured</option>
+          <option>Workshop</option>
+          <option>Competition</option>
+          <option>Talk</option>
+          <option>Announcement</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <span class="field-label">Event date</span>
+        <input type="date" id="ntDate">
+      </div>
+
+    </div>
+
+    <div class="field">
+      <span class="field-label">Event time</span>
+      <input
+        type="text"
+        id="ntTime"
+        placeholder="e.g. 6:00 PM">
+    </div>
+
+    <div class="field">
+      <span class="field-label">Description</span>
+      <textarea
+        id="ntDesc"
+        style="height:80px;"
+        placeholder="Write a short description"></textarea>
+    </div>
+
+    <div class="field">
+      <span class="field-label">Date label (optional)</span>
+      <input
+        type="text"
+        id="ntDateLabel"
+        placeholder="e.g. 11 – 12 Sep 2026">
+    </div>
+
+    <div class="field">
+      <span class="field-label">Details / Registration link (optional)</span>
+      <input
+        type="text"
+        id="ntLink"
+        placeholder="https://...">
+    </div>
+
+    <div class="field">
+      <span class="field-label">Image URL (optional)</span>
+      <input
+        type="text"
+        id="ntImage"
+        placeholder="https://...">
+    </div>
+
+    <button class="btn" id="addNoticeBtn">
+      + Add Notice
+    </button>
+
+    <div class="progress-note" id="ntProgress"></div>
+  </div>
+
+
+  <div class="card">
+
+    <h2>
+      Current notices (<span id="ntCount">0</span>)
+    </h2>
+
+    <div id="noticesList"></div>
+
+    <p class="empty-note" id="noticesEmptyNote">
+      No notices yet — use the form above.
+    </p>
+
+  </div>
+
+</div>
   </div>
 </div>
 
