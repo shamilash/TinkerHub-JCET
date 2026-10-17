@@ -876,6 +876,7 @@ document.getElementById('addNoticeBtn').addEventListener('click', async () => {
   const category = document.getElementById('ntCategory').value;
   const date = document.getElementById('ntDate').value;
   const file = document.getElementById('ntImage').files[0];
+  console.log('Selected image:', file);
 
   if (!title) {
     alert('Please enter a notice title.');
