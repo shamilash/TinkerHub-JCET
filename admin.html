@@ -871,92 +871,122 @@ async function loadNotices() {
 }
 
 
-document
-  .getElementById('addNoticeBtn')
-  .addEventListener('click', async () => {
+document.getElementById('addNoticeBtn').addEventListener('click', async () => {
+  const title = document.getElementById('ntTitle').value.trim();
+  const category = document.getElementById('ntCategory').value;
+  const date = document.getElementById('ntDate').value;
+  const file = document.getElementById('ntImage').files[0];
 
-    const title =
-      document.getElementById('ntTitle').value.trim();
+  if (!title) {
+    alert('Please enter a notice title.');
+    return;
+  }
 
-    const category =
-      document.getElementById('ntCategory').value;
+  // Allow only JPG, PNG and WebP images
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
 
-    const date =
-      document.getElementById('ntDate').value;
+  if (file && !allowedTypes.includes(file.type)) {
+    alert('Please upload a JPG, JPEG, PNG, or WebP image.');
+    return;
+  }
 
-    if (!title) {
-      alert('Please enter a notice title.');
-      return;
+  const btn = document.getElementById('addNoticeBtn');
+  const progress = document.getElementById('ntProgress');
+
+  btn.disabled = true;
+
+  let uploadedPath = null;
+  let noticeSaved = false;
+
+  try {
+    let imageUrl = null;
+
+    // Step 1: Upload the image if one was selected
+    if (file) {
+      progress.innerHTML =
+        '<span class="spinner"></span> Uploading image…';
+
+      const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      uploadedPath = `${Date.now()}-${safeFileName}`;
+
+      const { error: uploadError } = await supabase
+        .storage
+        .from('notices')
+        .upload(uploadedPath, file, {
+          contentType: file.type,
+          upsert: false
+        });
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      // Get the public URL of the uploaded image
+      const { data: urlData } = supabase
+        .storage
+        .from('notices')
+        .getPublicUrl(uploadedPath);
+
+      imageUrl = urlData.publicUrl;
     }
 
-    const btn =
-      document.getElementById('addNoticeBtn');
-
-    const progress =
-      document.getElementById('ntProgress');
-
-    btn.disabled = true;
-
+    // Step 2: Save the notice and its image URL
     progress.innerHTML =
-      '<span class="spinner"></span>Saving…';
+      '<span class="spinner"></span> Saving notice…';
 
-    const { error } = await supabase
+    const { error: insertError } = await supabase
       .from('notices')
       .insert({
-
-        title,
-
-        category,
-
-        description:
-          document.getElementById('ntDesc').value.trim(),
-
-        event_date:
-          date || null,
-
+        title: title,
+        category: category,
+        description: document.getElementById('ntDesc').value.trim(),
+        event_date: date || null,
         event_time:
           document.getElementById('ntTime').value.trim() || null,
-
-        
-
         link:
           document.getElementById('ntLink').value.trim() || null,
-
-        image:
-          document.getElementById('ntImage').value.trim() || null
-
+        image: imageUrl
       });
 
-   if (error) {
-
-  console.error("NOTICE INSERT ERROR:", error);
-
-  progress.textContent =
-    'Error: ' + error.message;
-
-} else {
-
-      document.getElementById('ntTitle').value = '';
-      document.getElementById('ntDate').value = '';
-      document.getElementById('ntTime').value = '';
-      document.getElementById('ntDesc').value = '';
-     
-      document.getElementById('ntLink').value = '';
-      document.getElementById('ntImage').value = '';
-
-      progress.textContent = 'Saved ✓';
-
-      loadNotices();
+    if (insertError) {
+      throw insertError;
     }
 
+    noticeSaved = true;
+
+    // Step 3: Clear the form after successful saving
+    document.getElementById('ntTitle').value = '';
+    document.getElementById('ntDate').value = '';
+    document.getElementById('ntTime').value = '';
+    document.getElementById('ntDesc').value = '';
+    document.getElementById('ntLink').value = '';
+    document.getElementById('ntImage').value = '';
+
+    progress.textContent = 'Notice published successfully!';
+
+    await loadNotices();
+
+  } catch (error) {
+    console.error('Notice saving error:', error);
+
+    // Remove the uploaded image if saving the notice failed
+    if (uploadedPath && !noticeSaved) {
+      const { error: cleanupError } = await supabase
+        .storage
+        .from('notices')
+        .remove([uploadedPath]);
+
+      if (cleanupError) {
+        console.error('Image cleanup error:', cleanupError);
+      }
+    }
+
+    progress.textContent = 'Error: ' + error.message;
+
+  } finally {
     btn.disabled = false;
-
-    setTimeout(
-      () => progress.textContent = '',
-      2500
-    );
-
-  });
+  }
+});
 
 /* ---------- PROJECTS ---------- */
 async function loadProjects(){
