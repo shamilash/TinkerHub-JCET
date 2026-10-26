@@ -116,6 +116,7 @@ code{font-family:var(--font-mono); background:var(--panel2); padding:2px 6px; bo
       <button class="tab-btn" data-panel="materials">Materials</button>
       <button class="tab-btn" data-panel="projects">Projects</button>
       <button class="tab-btn" data-panel="notices">Notices</button>
+      <button class="tab-btn" data-panel="wit-scoreboard">WIT Scoreboard</button>
     </div>
 
     <!-- EVENTS PANEL -->
@@ -404,6 +405,40 @@ code{font-family:var(--font-mono); background:var(--panel2); padding:2px 6px; bo
     </p>
 
   </div>
+  
+<!-- WIT WING SCOREBOARD PANEL -->
+<div class="panel" id="panel-wit-scoreboard">
+  <div class="card">
+    <h2>Add a student to the scoreboard</h2>
+
+    <div class="field">
+      <span class="field-label">Student name</span>
+      <input type="text" id="witStudentName" placeholder="Student's full name">
+    </div>
+
+    <div class="grid2">
+      <div class="field">
+        <span class="field-label">Points</span>
+        <input type="number" id="witStudentPoints" min="0" value="0">
+      </div>
+
+      <div class="field">
+        <span class="field-label">Events participated</span>
+        <input type="number" id="witStudentEvents" min="0" value="0">
+      </div>
+    </div>
+
+    <button class="btn" id="addWitStudentBtn">+ Add Student</button>
+    <div class="progress-note" id="witAdminProgress"></div>
+  </div>
+
+  <div class="card">
+    <h2>Student rankings (<span id="witAdminCount">0</span>)</h2>
+    <div id="witAdminList"></div>
+    <p class="empty-note" id="witAdminEmpty">No students added yet.</p>
+  </div>
+</div>
+
 
 </div>
   </div>
@@ -449,6 +484,7 @@ async function checkSession(){
     loadMaterials();
     loadProjects();
     loadNotices();
+    loadWitAdminScoreboard();
   } else {
     gate.style.display = 'flex';
     dash.classList.remove('show');
@@ -1039,6 +1075,191 @@ document.getElementById('addProjBtn').addEventListener('click', async () => {
   btn.disabled = false;
   setTimeout(() => progress.textContent = '', 2000);
 });
+  
+/* ---------- WIT WING SCOREBOARD ---------- */
+
+async function loadWitAdminScoreboard() {
+  const list = document.getElementById('witAdminList');
+  const empty = document.getElementById('witAdminEmpty');
+  const count = document.getElementById('witAdminCount');
+
+  list.innerHTML = '<p class="muted">Loading...</p>';
+
+  const { data, error } = await supabase
+    .from('wit_scoreboard')
+    .select('id, student_name, points, events_participated')
+    .order('points', { ascending: false })
+    .order('student_name', { ascending: true });
+
+  if (error) {
+    list.innerHTML = '<p class="err">Could not load scoreboard: ' +
+      error.message + '</p>';
+    return;
+  }
+
+  const rows = data || [];
+  count.textContent = rows.length;
+  list.replaceChildren();
+  empty.style.display = rows.length ? 'none' : 'block';
+
+  rows.forEach((student, index) => {
+    const row = document.createElement('div');
+    row.className = 'list-item';
+
+    const details = document.createElement('div');
+    details.className = 'li-main';
+
+    const info = document.createElement('div');
+    const name = document.createElement('b');
+    name.textContent = `${index + 1}. ${student.student_name}`;
+
+    const meta = document.createElement('div');
+    meta.className = 'li-meta';
+    meta.textContent =
+      `${student.points} points · ${student.events_participated} events`;
+
+    info.append(name, meta);
+    details.appendChild(info);
+
+    const actions = document.createElement('div');
+    actions.style.display = 'flex';
+    actions.style.gap = '8px';
+
+    const editBtn = document.createElement('button');
+    editBtn.className = 'btn btn-secondary';
+    editBtn.textContent = 'Edit';
+
+    editBtn.addEventListener('click', async () => {
+      const newName = prompt('Student name:', student.student_name);
+      if (newName === null) return;
+
+      if (!newName.trim()) {
+        alert('Student name cannot be empty.');
+        return;
+      }
+
+      const newPoints = prompt('Points:', student.points);
+      if (newPoints === null) return;
+
+      const newEvents = prompt(
+        'Events participated:',
+        student.events_participated
+      );
+      if (newEvents === null) return;
+
+      const points = Number(newPoints);
+      const events = Number(newEvents);
+
+      if (
+        newPoints.trim() === '' ||
+        newEvents.trim() === '' ||
+        !Number.isInteger(points) ||
+        !Number.isInteger(events) ||
+        points < 0 ||
+        events < 0
+      ) {
+        alert('Points and events must be non-negative whole numbers.');
+        return;
+      }
+
+      const { error } = await supabase
+        .from('wit_scoreboard')
+        .update({
+          student_name: newName.trim(),
+          points,
+          events_participated: events
+        })
+        .eq('id', student.id);
+
+      if (error) {
+        alert('Could not update student: ' + error.message);
+        return;
+      }
+
+      loadWitAdminScoreboard();
+    });
+
+    const deleteBtn = document.createElement('button');
+    deleteBtn.className = 'btn-danger';
+    deleteBtn.textContent = 'Delete';
+
+    deleteBtn.addEventListener('click', async () => {
+      if (!confirm(`Delete ${student.student_name} from the scoreboard?`)) {
+        return;
+      }
+
+      const { error } = await supabase
+        .from('wit_scoreboard')
+        .delete()
+        .eq('id', student.id);
+
+      if (error) {
+        alert('Could not delete student: ' + error.message);
+        return;
+      }
+
+      loadWitAdminScoreboard();
+    });
+
+    actions.append(editBtn, deleteBtn);
+    row.append(details, actions);
+    list.appendChild(row);
+  });
+}
+
+document.getElementById('addWitStudentBtn')
+  .addEventListener('click', async () => {
+    const nameInput = document.getElementById('witStudentName');
+    const pointsInput = document.getElementById('witStudentPoints');
+    const eventsInput = document.getElementById('witStudentEvents');
+    const progress = document.getElementById('witAdminProgress');
+    const btn = document.getElementById('addWitStudentBtn');
+
+    const name = nameInput.value.trim();
+    const points = Number(pointsInput.value);
+    const events = Number(eventsInput.value);
+
+    if (!name) {
+      alert('Please enter the student name.');
+      return;
+    }
+
+    if (
+      pointsInput.value.trim() === '' ||
+      eventsInput.value.trim() === '' ||
+      !Number.isInteger(points) ||
+      !Number.isInteger(events) ||
+      points < 0 ||
+      events < 0
+    ) {
+      alert('Points and events must be non-negative whole numbers.');
+      return;
+    }
+
+    btn.disabled = true;
+    progress.textContent = 'Saving...';
+
+    const { error } = await supabase
+      .from('wit_scoreboard')
+      .insert({
+        student_name: name,
+        points,
+        events_participated: events
+      });
+
+    if (error) {
+      progress.textContent = 'Error: ' + error.message;
+    } else {
+      nameInput.value = '';
+      pointsInput.value = '0';
+      eventsInput.value = '0';
+      progress.textContent = 'Student added successfully!';
+      await loadWitAdminScoreboard();
+    }
+
+    btn.disabled = false;
+  });
+
 </script>
 
 </body>
