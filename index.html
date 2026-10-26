@@ -538,6 +538,63 @@ async function loadProjectsFromSupabase(){
   if (data && data.length) renderProjects(data);
 }
 loadProjectsFromSupabase();
+  
+/* WIT WING SCOREBOARD — public read-only display */
+async function loadWitScoreboard() {
+  const tbody = document.getElementById('witScoreboardBody');
+
+  if (!supabaseReady || !supabase) {
+    tbody.textContent = 'Scoreboard is temporarily unavailable.';
+    return;
+  }
+
+  const { data, error } = await supabase
+    .from('wit_scoreboard')
+    .select('student_name, points, events_participated')
+    .order('points', { ascending: false })
+    .order('student_name', { ascending: true });
+
+  if (error) {
+    console.error('Could not load WIT scoreboard:', error);
+    tbody.textContent = 'Could not load the scoreboard. Please try again later.';
+    return;
+  }
+
+  tbody.replaceChildren();
+
+  if (!data || data.length === 0) {
+    const row = document.createElement('tr');
+    const cell = document.createElement('td');
+    cell.colSpan = 4;
+    cell.textContent = 'No scores yet. Stay tuned!';
+    cell.style.cssText = 'padding:18px;text-align:center;';
+    row.appendChild(cell);
+    tbody.appendChild(row);
+    return;
+  }
+
+  data.forEach((student, index) => {
+    const row = document.createElement('tr');
+    const values = [
+      index + 1,
+      student.student_name,
+      student.points,
+      student.events_participated
+    ];
+
+    values.forEach((value) => {
+      const cell = document.createElement('td');
+      cell.textContent = String(value ?? '');
+      cell.style.cssText = 'padding:14px;border-top:1px solid var(--line, #ddd);';
+      row.appendChild(cell);
+    });
+
+    tbody.appendChild(row);
+  });
+}
+
+loadWitScoreboard();
+
 </script>
 </body>
 </html>
